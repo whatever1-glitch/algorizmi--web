@@ -1,10 +1,294 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Algorizmi</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Algorizmi Studio</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Segoe UI,Arial;color:#16435a;background:radial-gradient(circle at 15% 10%,#fff 0,transparent 30%),linear-gradient(135deg,#bceafa,#dffafa,#b6dff3);padding:22px}
+button{border:1px solid #ffffffc9;border-radius:12px;padding:10px 16px;background:linear-gradient(145deg,#fff,#bdeefa);color:#176080;font-weight:700;cursor:pointer;box-shadow:0 5px 15px #397e9d30;transition:.2s}
+button:hover{transform:translateY(-2px);box-shadow:0 9px 20px #397e9d40}
+.run{background:linear-gradient(135deg,#28b4df,#087db9);color:white}
+header{max-width:1400px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:23px;font-weight:900;background:linear-gradient(145deg,#fff,#7edcf0);box-shadow:0 8px 20px #398ca54a}
+h1{font-size:22px;margin:0}header p{margin:3px 0;color:#568398;font-size:12px}
+.actions{display:flex;gap:8px}
+main{max-width:1400px;margin:auto;display:grid;grid-template-columns:1.6fr 1fr;gap:18px}
+.glass{background:#ffffff80;border:1px solid #ffffffd9;border-radius:20px;backdrop-filter:blur(18px);box-shadow:0 18px 50px #367f9d24,inset 1px 1px 2px white;overflow:hidden}
+.head{padding:14px 17px;border-bottom:1px solid #75b8ce55;background:#ffffff55;display:flex;justify-content:space-between;font-size:13px;font-weight:700}
+.editor{height:580px;display:grid;grid-template-columns:42px 1fr;background:#f5fcff80;overflow:hidden}
+#numbers{padding:17px 10px;text-align:right;color:#9bb4c0;font:13px/1.7 Consolas,monospace;white-space:pre;overflow:hidden}
+.code{position:relative;overflow:hidden}
+#code,#paint{position:absolute;inset:0;margin:0;padding:17px;width:100%;height:100%;border:0;white-space:pre;overflow:auto;tab-size:2;font:13px/1.7 Consolas,monospace}
+#paint{pointer-events:none;color:#24495d}
+#code{resize:none;background:transparent;color:transparent;caret-color:#087db9;outline:none;-webkit-text-fill-color:transparent}
+#code::selection{background:#75d9f377}
+.kw{color:#087eae;font-weight:bold}.str{color:#16875c}.num{color:#c47b27}.type{color:#9b61b3}.com{color:#8ba2ad;font-style:italic}
+.foot{padding:10px 15px;font-size:11px;color:#7292a1;border-top:1px solid #75b8ce55;display:flex;justify-content:space-between}
+.side{display:flex;flex-direction:column;gap:16px}
+#output{height:260px;overflow:auto;padding:15px;background:#f7fdff80;font:13px/1.8 Consolas,monospace;white-space:pre-wrap}
+.good{color:#16865f}.bad{color:#c34b56}.muted{color:#7998a8}
+.examples{padding:16px}.examples h3{font-size:13px;margin:0 0 12px}.examples button{font-size:11px;padding:8px 10px;margin:0 5px 7px 0}
+.info{padding:16px;font-size:12px;line-height:1.7;color:#5d8092}
+.info h3{color:#16435a;font-size:13px;margin:0 0 8px}
+footer{text-align:center;font-size:11px;color:#7292a1;margin:22px}
+@media(max-width:850px){main{grid-template-columns:1fr}.editor{height:450px}}
+@media(max-width:500px){body{padding:12px}.actions button{padding:8px;font-size:11px}.brand h1{font-size:18px}.editor{height:400px}}
+</style>
 </head>
 <body>
-    <h1>Algorizmi</h1>
-    <p>Programming, reimagined.</p>
+<header>
+<div class="brand"><div class="logo">A</div><div><h1>Algorizmi Studio</h1><p>Programming, reimagined.</p></div></div>
+<div class="actions"><button onclick="resetCode()">Reset</button><button class="run" onclick="run()">▶ Run</button></div>
+</header>
+
+<main>
+<section class="glass">
+<div class="head"><span>● Editor</span><span>main.algo</span></div>
+<div class="editor">
+<div id="numbers">1</div>
+<div class="code">
+<pre id="paint"></pre>
+<textarea id="code" spellcheck="false" autocapitalize="off"></textarea>
+</div>
+</div>
+<div class="foot"><span>Algorizmi Web v0.1</span><span>Ctrl + Enter to run</span><span id="position">Ln 1</span></div>
+</section>
+
+<aside class="side">
+<section class="glass">
+<div class="head"><span>◈ Output console</span><button onclick="clearOutput()">Clear</button></div>
+<div id="output"><span class="muted">Welcome to Algorizmi. Run your first program!</span></div>
+</section>
+<section class="glass examples">
+<h3>Examples</h3>
+<button onclick="example('hello')">Hello World</button>
+<button onclick="example('calc')">Calculator</button>
+<button onclick="example('loop')">Loops</button>
+<button onclick="example('condition')">Conditions</button>
+</section>
+<section class="glass info">
+<h3>Language reference</h3>
+<b>Types:</b> entier, réel, chaine, booléen<br>
+<b>Output:</b> Ecrire("Hello")<br>
+<b>Input:</b> Lire(x)<br>
+<b>Conditions:</b> Si / Alors / Sinon / FinSi<br>
+<b>Loops:</b> Pour / FinPour, TantQue / FinTantQue<br>
+<b>Assignment:</b> x ← 10
+</section>
+</aside>
+</main>
+<footer>ALGORIZMI · Built for the next generation of programmers.</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const editor=$("code"),paint=$("paint"),numbers=$("numbers"),output=$("output");
+
+const samples={
+hello:`Algorithme Bonjour
+Variables
+  nom : chaine
+Début
+  nom ← "Algorizmi"
+  Ecrire("Bienvenue sur ", nom, " !")
+Fin`,
+calc:`Algorithme Calculatrice
+Variables
+  a, b, resultat : réel
+Début
+  a ← 20
+  b ← 5
+  resultat ← a / b
+  Ecrire("Résultat : ", resultat)
+Fin`,
+loop:`Algorithme Boucle
+Variables
+  i : entier
+Début
+  Pour i de 1 à 5 Faire
+    Ecrire("Tour numéro ", i)
+  FinPour
+Fin`,
+condition:`Algorithme Conditions
+Variables
+  note : réel
+Début
+  note ← 15
+  Si note >= 10 Alors
+    Ecrire("Admis !")
+  Sinon
+    Ecrire("Non admis")
+  FinSi
+Fin`
+};
+
+editor.value=samples.hello;
+
+function escapeHTML(s){
+ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function update(){
+ let s=escapeHTML(editor.value);
+ s=s.replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g,'<span class="str">$1</span>');
+ s=s.replace(/\/\/.*/g,'<span class="com">$&</span>');
+ s=s.replace(/\b(entier|réel|reel|chaine|booléen)\b/gi,'<span class="type">$1</span>');
+ s=s.replace(/\b(Algorithme|Variables|Début|Fin|Ecrire|Écrire|Lire|Si|Alors|Sinon|FinSi|Pour|Faire|FinPour|TantQue|FinTantQue|Répéter|Jusqu'à)\b/gi,'<span class="kw">$1</span>');
+ s=s.replace(/\b\d+(?:[.,]\d+)?\b/g,'<span class="num">$&</span>');
+ paint.innerHTML=s+"\n";
+ numbers.textContent=Array.from({length:editor.value.split("\n").length},(_,i)=>i+1).join("\n");
+}
+editor.addEventListener("input",update);
+editor.addEventListener("scroll",()=>{paint.scrollTop=editor.scrollTop;paint.scrollLeft=editor.scrollLeft;numbers.scrollTop=editor.scrollTop});
+editor.addEventListener("keydown",e=>{
+ if(e.key==="Tab"){e.preventDefault();editor.setRangeText("  ",editor.selectionStart,editor.selectionEnd,"end");update()}
+ if(e.ctrlKey&&e.key==="Enter")run();
+});
+function example(name){editor.value=samples[name];update();clearOutput()}
+function resetCode(){example("hello")}
+function clearOutput(){output.innerHTML=""}
+function print(v){const d=document.createElement("div");d.textContent=String(v);output.appendChild(d)}
+function fail(v){const d=document.createElement("div");d.className="bad";d.textContent="ERROR: "+v;output.appendChild(d)}
+
+function normalize(s){
+ return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+}
+function stripComment(s){return s.replace(/\/\/.*$/,"").trim()}
+
+function splitArgs(s){
+ let result=[],current="",quote=null,depth=0;
+ for(let i=0;i<s.length;i++){
+  let c=s[i];
+  if(quote){current+=c;if(c===quote&&s[i-1]!=="\\")quote=null;continue}
+  if(c==='"'||c==="'"){quote=c;current+=c}
+  else if(c==="("){depth++;current+=c}
+  else if(c===")"){depth--;current+=c}
+  else if(c===","&&depth===0){result.push(current.trim());current=""}
+  else current+=c;
+ }
+ if(current.trim())result.push(current.trim());
+ return result;
+}
+
+function evalExpr(expr,env){
+ expr=expr.trim();
+ if(!expr)throw Error("Empty expression");
+ expr=expr.replace(/<>/g,"!=").replace(/←/g,"=");
+ expr=expr.replace(/\b(et)\b/gi,"&&").replace(/\b(ou)\b/gi,"||");
+ expr=expr.replace(/\b(non)\b/gi,"!");
+ expr=expr.replace(/\bdiv\b/gi,"/");
+ expr=expr.replace(/\bmod\b/gi,"%");
+ expr=expr.replace(/\bVrai\b/gi,"true").replace(/\bFaux\b/gi,"false");
+ expr=expr.replace(/\b(Long|Majus|Minus|Abs|Racine)\s*\(/gi,(m)=>m.toLowerCase()+"(");
+ expr=expr.replace(/\b(long|majus|minus|abs|racine)\s*\(/g,(m)=>{
+  const name=m.trim().replace("(","");
+  return ({long:"String",majus:"String",minus:"String",abs:"Math.abs",racine:"Math.sqrt"})[name]+"(";
+ });
+ expr=expr.replace(/\b([A-Za-zÀ-ÿ_]\w*)\b/g,(word)=>{
+  if(["true","false","Math","String"].includes(word))return word;
+  if(/^(String|Math)$/.test(word))return word;
+  if(Object.prototype.hasOwnProperty.call(env,word))return "env["+JSON.stringify(word)+"]";
+  return word;
+ });
+ // Only allow a deliberately limited expression grammar.
+ if(!/^[\w\s"'.,()[\]!<>=+\-*\/%&|:]+$/u.test(expr))throw Error("Invalid expression: "+expr);
+ if(/\b(?:window|document|globalThis|constructor|prototype|eval|Function|prompt|fetch)\b/i.test(expr))throw Error("Unsupported expression");
+ try{
+  const fn=new Function("env",'"use strict"; return ('+expr+');');
+  return fn(env);
+ }catch(e){throw Error("Expression error: "+e.message)}
+}
+
+function parse(source){
+ const lines=source.split(/\r?\n/).map((raw,i)=>({text:stripComment(raw),line:i+1})).filter(x=>x.text);
+ let i=0,vars={};
+ while(i<lines.length){
+  let s=lines[i].text,n=normalize(s);
+  if(n==="variables"||n==="debut"||n==="fin"||n.startsWith("algorithme ")){i++;continue}
+  let d=s.match(/^([\p{L}_][\p{L}\d_]*(?:\s*,\s*[\p{L}_][\p{L}\d_]*)*)\s*:\s*(entier|réel|reel|chaine|chaîne|booléen|booleen)$/iu);
+  if(d){d[1].split(",").forEach(v=>vars[v.trim()]=0);i++;continue}
+  break;
+ }
+ function block(stops=[]){
+  let out=[];
+  while(i<lines.length&&!stops.includes(normalize(lines[i].text))){
+   let row=lines[i],s=row.text,n=normalize(s),m;
+   if((m=s.match(/^si\s+(.+)\s+alors$/iu))){
+    i++;let yes=block(["sinon","finsi"]),no=[];
+    if(i<lines.length&&normalize(lines[i].text)==="sinon"){i++;no=block(["finsi"])}
+    if(i>=lines.length)throw Error("Missing FinSi at line "+row.line);
+    i++;out.push({type:"if",test:m[1],yes,no,line:row.line});continue;
+   }
+   if((m=s.match(/^pour\s+([\p{L}_]\w*)\s+de\s+(.+?)\s+à\s+(.+?)\s+faire$/iu))){
+    i++;let body=block(["finpour"]);
+    if(i>=lines.length)throw Error("Missing FinPour at line "+row.line);
+    i++;out.push({type:"for",name:m[1],from:m[2],to:m[3],body,line:row.line});continue;
+   }
+   if((m=s.match(/^tantque\s+(.+)\s+faire$/iu))){
+    i++;let body=block(["fintantque"]);
+    if(i>=lines.length)throw Error("Missing FinTantQue at line "+row.line);
+    i++;out.push({type:"while",test:m[1],body,line:row.line});continue;
+   }
+   if((m=s.match(/^(?:ecrire|écrire)\s*(?:\((.*)\)|(.*))$/iu))){
+    i++;let arg=(m[1]??m[2]??"").trim();
+    out.push({type:"print",args:arg?splitArgs(arg):[],line:row.line});continue;
+   }
+   if((m=s.match(/^lire\s*\(\s*([\p{L}_]\w*)\s*\)$/iu))){
+    i++;out.push({type:"read",name:m[1],line:row.line});continue;
+   }
+   if((m=s.match(/^([\p{L}_]\w*)\s*(?:←|<-|:=|=)\s*(.+)$/u))){
+    i++;out.push({type:"set",name:m[1],expr:m[2],line:row.line});continue;
+   }
+   if(n==="debut"||n==="fin"||n==="variables"||n.startsWith("algorithme ")){i++;continue}
+   throw Error("Unknown instruction at line "+row.line+": "+s);
+  }
+  return out;
+ }
+ return {body:block(),vars};
+}
+
+function run(){
+ clearOutput();
+ try{
+  const program=parse(editor.value),env={...program.vars};
+  let count=0;
+  function execute(body){
+   for(const s of body){
+    if(++count>100000)throw Error("Execution limit reached. Possible infinite loop.");
+    if(s.type==="print"){
+     print(s.args.map(x=>evalExpr(x,env)).join(" "));
+    }else if(s.type==="set"){
+     if(!(s.name in env))throw Error("Variable "+s.name+" is not declared (line "+s.line+")");
+     env[s.name]=evalExpr(s.expr,env);
+    }else if(s.type==="read"){
+     const v=prompt("Enter value for "+s.name);
+     if(v===null)throw Error("Input cancelled");
+     env[s.name]=isNaN(v)?v:Number(v);
+    }else if(s.type==="if"){
+     execute(evalExpr(s.test,env)?s.yes:s.no);
+    }else if(s.type==="for"){
+     let start=Number(evalExpr(s.from,env)),end=Number(evalExpr(s.to,env));
+     let step=start<=end?1:-1;
+     for(let x=start;step>0?x<=end:x>=end;x+=step){
+      env[s.name]=x;execute(s.body);
+      if(++count>100000)throw Error("Loop limit reached");
+     }
+    }else if(s.type==="while"){
+     let guard=0;
+     while(evalExpr(s.test,env)){
+      execute(s.body);
+      if(++guard>10000)throw Error("TantQue loop limit reached at line "+s.line);
+     }
+    }
+   }
+  }
+  execute(program.body);
+  print("✓ Program finished successfully.");
+ }catch(e){fail(e.message)}
+}
+update();
+</script>
 </body>
 </html>
