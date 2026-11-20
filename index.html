@@ -1,112 +1,99 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Algorizmi Studio</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:Segoe UI,Arial;color:#16435a;background:radial-gradient(circle at 15% 10%,#fff 0,transparent 30%),linear-gradient(135deg,#bceafa,#dffafa,#b6dff3);padding:22px}
-button{border:1px solid #ffffffc9;border-radius:12px;padding:10px 16px;background:linear-gradient(145deg,#fff,#bdeefa);color:#176080;font-weight:700;cursor:pointer;box-shadow:0 5px 15px #397e9d30;transition:.2s}
-button:hover{transform:translateY(-2px);box-shadow:0 9px 20px #397e9d40}
-.run{background:linear-gradient(135deg,#28b4df,#087db9);color:white}
-header{max-width:1400px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:22px}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:23px;font-weight:900;background:linear-gradient(145deg,#fff,#7edcf0);box-shadow:0 8px 20px #398ca54a}
-h1{font-size:22px;margin:0}header p{margin:3px 0;color:#568398;font-size:12px}
-.actions{display:flex;gap:8px}
-main{max-width:1400px;margin:auto;display:grid;grid-template-columns:1.6fr 1fr;gap:18px}
-.glass{background:#ffffff80;border:1px solid #ffffffd9;border-radius:20px;backdrop-filter:blur(18px);box-shadow:0 18px 50px #367f9d24,inset 1px 1px 2px white;overflow:hidden}
-.head{padding:14px 17px;border-bottom:1px solid #75b8ce55;background:#ffffff55;display:flex;justify-content:space-between;font-size:13px;font-weight:700}
-.editor{height:580px;display:grid;grid-template-columns:42px 1fr;background:#f5fcff80;overflow:hidden}
-#numbers{padding:17px 10px;text-align:right;color:#9bb4c0;font:13px/1.7 Consolas,monospace;white-space:pre;overflow:hidden}
-.code{position:relative;overflow:hidden}
-#code,#paint{position:absolute;inset:0;margin:0;padding:17px;width:100%;height:100%;border:0;white-space:pre;overflow:auto;tab-size:2;font:13px/1.7 Consolas,monospace}
-#paint{pointer-events:none;color:#24495d}
-#code{resize:none;background:transparent;color:transparent;caret-color:#087db9;outline:none;-webkit-text-fill-color:transparent}
-#code::selection{background:#75d9f377}
-.kw{color:#087eae;font-weight:bold}.str{color:#16875c}.num{color:#c47b27}.type{color:#9b61b3}.com{color:#8ba2ad;font-style:italic}
-.foot{padding:10px 15px;font-size:11px;color:#7292a1;border-top:1px solid #75b8ce55;display:flex;justify-content:space-between}
-.side{display:flex;flex-direction:column;gap:16px}
-#output{height:260px;overflow:auto;padding:15px;background:#f7fdff80;font:13px/1.8 Consolas,monospace;white-space:pre-wrap}
-.good{color:#16865f}.bad{color:#c34b56}.muted{color:#7998a8}
-.examples{padding:16px}.examples h3{font-size:13px;margin:0 0 12px}.examples button{font-size:11px;padding:8px 10px;margin:0 5px 7px 0}
-.info{padding:16px;font-size:12px;line-height:1.7;color:#5d8092}
-.info h3{color:#16435a;font-size:13px;margin:0 0 8px}
-footer{text-align:center;font-size:11px;color:#7292a1;margin:22px}
-@media(max-width:850px){main{grid-template-columns:1fr}.editor{height:450px}}
-@media(max-width:500px){body{padding:12px}.actions button{padding:8px;font-size:11px}.brand h1{font-size:18px}.editor{height:400px}}
+body{margin:0;font-family:Segoe UI,Arial;color:#16475e;background:linear-gradient(135deg,#c5eff8,#eefcff,#b9e5f2);padding:20px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:15px}
+h1{margin:0;font-size:23px}
+small{color:#6694a7}
+button{border:1px solid white;border-radius:12px;padding:10px 15px;background:linear-gradient(145deg,#fff,#c9edf6);color:#17617d;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px #397e9d25}
+button:hover{filter:brightness(1.04);transform:translateY(-1px)}
+.run{background:linear-gradient(135deg,#20b6df,#087cae);color:white}
+.layout{display:grid;grid-template-columns:1.7fr .8fr;gap:16px;max-width:1500px;margin:auto}
+.panel{background:#ffffffa8;border:1px solid white;border-radius:18px;overflow:hidden;box-shadow:0 14px 35px #397e9d20;backdrop-filter:blur(15px)}
+.heading{padding:14px 16px;background:#ffffff70;border-bottom:1px solid #b5dce8;font-weight:bold;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+#editor{height:620px;width:100%}
+.side{display:flex;flex-direction:column;gap:15px}
+#output{height:220px;overflow:auto;padding:14px;font:13px/1.8 Consolas,monospace;white-space:pre-wrap;background:#f6fdff}
+.error{color:#bd4355}.success{color:#16835e}
+.examples,.reference{padding:15px;font-size:12px;line-height:1.8}
+.examples button{font-size:11px;padding:7px 10px;margin:3px}
+code{background:#e1f5fa;padding:2px 4px;border-radius:4px}
+footer{text-align:center;color:#7295a5;font-size:11px;margin-top:18px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}#editor{height:480px}}
 </style>
 </head>
 <body>
 <header>
-<div class="brand"><div class="logo">A</div><div><h1>Algorizmi Studio</h1><p>Programming, reimagined.</p></div></div>
-<div class="actions"><button onclick="resetCode()">Reset</button><button class="run" onclick="run()">▶ Run</button></div>
+ <div><h1>◈ Algorizmi Studio</h1><small>Programming, reimagined.</small></div>
+ <div>
+  <button onclick="formatCode()">Format</button>
+  <button onclick="resetCode()">Reset</button>
+  <button class="run" onclick="runProgram()">▶ Run · Ctrl+Enter</button>
+ </div>
 </header>
 
-<main>
-<section class="glass">
-<div class="head"><span>● Editor</span><span>main.algo</span></div>
-<div class="editor">
-<div id="numbers">1</div>
-<div class="code">
-<pre id="paint"></pre>
-<textarea id="code" spellcheck="false" autocapitalize="off"></textarea>
-</div>
-</div>
-<div class="foot"><span>Algorizmi Web v0.1</span><span>Ctrl + Enter to run</span><span id="position">Ln 1</span></div>
-</section>
-
-<aside class="side">
-<section class="glass">
-<div class="head"><span>◈ Output console</span><button onclick="clearOutput()">Clear</button></div>
-<div id="output"><span class="muted">Welcome to Algorizmi. Run your first program!</span></div>
-</section>
-<section class="glass examples">
-<h3>Examples</h3>
-<button onclick="example('hello')">Hello World</button>
-<button onclick="example('calc')">Calculator</button>
-<button onclick="example('loop')">Loops</button>
-<button onclick="example('condition')">Conditions</button>
-</section>
-<section class="glass info">
-<h3>Language reference</h3>
-<b>Types:</b> entier, réel, chaine, booléen<br>
-<b>Output:</b> Ecrire("Hello")<br>
-<b>Input:</b> Lire(x)<br>
-<b>Conditions:</b> Si / Alors / Sinon / FinSi<br>
-<b>Loops:</b> Pour / FinPour, TantQue / FinTantQue<br>
-<b>Assignment:</b> x ← 10
-</section>
-</aside>
+<main class="layout">
+ <section class="panel">
+  <div class="heading"><span>main.algo</span><span id="status">● Ready</span></div>
+  <div id="editor"></div>
+ </section>
+ <aside class="side">
+  <section class="panel">
+   <div class="heading">◈ Output console <button onclick="clearOutput()">Clear</button></div>
+   <div id="output">Welcome to Algorizmi. Press Run to execute.</div>
+  </section>
+  <section class="panel examples">
+   <b>EXAMPLES</b><br>
+   <button onclick="loadExample('calc')">Calculator</button>
+   <button onclick="loadExample('hello')">Hello</button>
+   <button onclick="loadExample('loop')">Loops</button>
+   <button onclick="loadExample('condition')">Conditions</button>
+   <button onclick="loadExample('repeat')">Repeat</button>
+  </section>
+  <section class="panel reference">
+   <b>LANGUAGE REFERENCE</b><br>
+   Types: <code>entier</code> <code>réel</code> <code>chaine</code> <code>booléen</code><br>
+   Output: <code>Ecrire("Hello", x)</code><br>
+   Input: <code>Lire(x)</code><br>
+   Conditions: <code>Si / Alors / Sinon / FinSi</code><br>
+   Loops: <code>Pour / FinPour</code>, <code>TantQue / FinTantQue</code><br>
+   Repeat: <code>Répéter / Jusqu'à</code><br>
+   Operators: <code>et</code> <code>ou</code> <code>non</code> <code>div</code> <code>mod</code><br>
+   <small>Ctrl+Space: autocomplete · Hover: documentation</small>
+  </section>
+ </aside>
 </main>
-<footer>ALGORIZMI · Built for the next generation of programmers.</footer>
+<footer>ALGORIZMI STUDIO · WEB IDE</footer>
 
 <script>
-const $=id=>document.getElementById(id);
-const editor=$("code"),paint=$("paint"),numbers=$("numbers"),output=$("output");
-
-const samples={
-hello:`Algorithme Bonjour
-Variables
-  nom : chaine
-Début
-  nom ← "Algorizmi"
-  Ecrire("Bienvenue sur ", nom, " !")
-Fin`,
+const examples={
 calc:`Algorithme Calculatrice
 Variables
-  a, b, resultat : réel
+a, b, resultat : réel
 Début
   a ← 20
   b ← 5
   resultat ← a / b
   Ecrire("Résultat : ", resultat)
 Fin`,
+hello:`Algorithme Bonjour
+Variables
+nom : chaine
+Début
+  nom ← "Algorizmi"
+  Ecrire("Bienvenue sur ", nom, " !")
+Fin`,
 loop:`Algorithme Boucle
 Variables
-  i : entier
+i : entier
 Début
   Pour i de 1 à 5 Faire
     Ecrire("Tour numéro ", i)
@@ -114,7 +101,7 @@ Début
 Fin`,
 condition:`Algorithme Conditions
 Variables
-  note : réel
+note : réel
 Début
   note ← 15
   Si note >= 10 Alors
@@ -122,173 +109,430 @@ Début
   Sinon
     Ecrire("Non admis")
   FinSi
+Fin`,
+repeat:`Algorithme Repeter
+Variables
+i : entier
+Début
+  i ← 1
+  Répéter
+    Ecrire("Valeur : ", i)
+    i ← i + 1
+  Jusqu'à i > 3
 Fin`
 };
 
-editor.value=samples.hello;
+let editor;
+let monacoReady=false;
+let timer;
 
-function escapeHTML(s){
- return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
-function update(){
- let s=escapeHTML(editor.value);
- s=s.replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g,'<span class="str">$1</span>');
- s=s.replace(/\/\/.*/g,'<span class="com">$&</span>');
- s=s.replace(/\b(entier|réel|reel|chaine|booléen)\b/gi,'<span class="type">$1</span>');
- s=s.replace(/\b(Algorithme|Variables|Début|Fin|Ecrire|Écrire|Lire|Si|Alors|Sinon|FinSi|Pour|Faire|FinPour|TantQue|FinTantQue|Répéter|Jusqu'à)\b/gi,'<span class="kw">$1</span>');
- s=s.replace(/\b\d+(?:[.,]\d+)?\b/g,'<span class="num">$&</span>');
- paint.innerHTML=s+"\n";
- numbers.textContent=Array.from({length:editor.value.split("\n").length},(_,i)=>i+1).join("\n");
-}
-editor.addEventListener("input",update);
-editor.addEventListener("scroll",()=>{paint.scrollTop=editor.scrollTop;paint.scrollLeft=editor.scrollLeft;numbers.scrollTop=editor.scrollTop});
-editor.addEventListener("keydown",e=>{
- if(e.key==="Tab"){e.preventDefault();editor.setRangeText("  ",editor.selectionStart,editor.selectionEnd,"end");update()}
- if(e.ctrlKey&&e.key==="Enter")run();
-});
-function example(name){editor.value=samples[name];update();clearOutput()}
-function resetCode(){example("hello")}
-function clearOutput(){output.innerHTML=""}
-function print(v){const d=document.createElement("div");d.textContent=String(v);output.appendChild(d)}
-function fail(v){const d=document.createElement("div");d.className="bad";d.textContent="ERROR: "+v;output.appendChild(d)}
+const $=id=>document.getElementById(id);
+const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 
-function normalize(s){
- return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+function output(text,kind=""){
+ const d=document.createElement("div");
+ d.textContent=text;
+ d.className=kind;
+ $("output").appendChild(d);
+ $("output").scrollTop=$("output").scrollHeight;
 }
-function stripComment(s){return s.replace(/\/\/.*$/,"").trim()}
+function clearOutput(){$("output").textContent=""}
+function status(s){$("status").textContent="● "+s}
+function loadExample(k){editor.setValue(examples[k]);clearOutput();analyze()}
+function resetCode(){loadExample("calc")}
+function formatCode(){
+ let depth=0;
+ const result=editor.getValue().split("\n").map(line=>{
+  const s=line.trim();
+  if(!s)return "";
+  if(/^(FinSi|FinPour|FinTantQue|Jusqu'à)/i.test(s))depth=Math.max(0,depth-1);
+  const out="  ".repeat(depth)+s;
+  if(/^(Si .* Alors|Pour .* Faire|TantQue .* Faire|Répéter)/i.test(s))depth++;
+  return out;
+ });
+ editor.setValue(result.join("\n"));
+}
 
 function splitArgs(s){
- let result=[],current="",quote=null,depth=0;
+ let result=[],start=0,q=null,depth=0;
  for(let i=0;i<s.length;i++){
-  let c=s[i];
-  if(quote){current+=c;if(c===quote&&s[i-1]!=="\\")quote=null;continue}
-  if(c==='"'||c==="'"){quote=c;current+=c}
-  else if(c==="("){depth++;current+=c}
-  else if(c===")"){depth--;current+=c}
-  else if(c===","&&depth===0){result.push(current.trim());current=""}
-  else current+=c;
+  const c=s[i];
+  if(q){if(c===q&&s[i-1]!=="\\")q=null;continue}
+  if(c==='"'||c==="'"){q=c;continue}
+  if(c==="(")depth++;
+  if(c===")")depth--;
+  if(c===","&&depth===0){result.push(s.slice(start,i).trim());start=i+1}
  }
- if(current.trim())result.push(current.trim());
- return result;
+ result.push(s.slice(start).trim());
+ return result.filter(Boolean);
 }
 
-function evalExpr(expr,env){
- expr=expr.trim();
- if(!expr)throw Error("Empty expression");
- expr=expr.replace(/<>/g,"!=").replace(/←/g,"=");
- expr=expr.replace(/\b(et)\b/gi,"&&").replace(/\b(ou)\b/gi,"||");
- expr=expr.replace(/\b(non)\b/gi,"!");
- expr=expr.replace(/\bdiv\b/gi,"/");
- expr=expr.replace(/\bmod\b/gi,"%");
- expr=expr.replace(/\bVrai\b/gi,"true").replace(/\bFaux\b/gi,"false");
- expr=expr.replace(/\b(Long|Majus|Minus|Abs|Racine)\s*\(/gi,(m)=>m.toLowerCase()+"(");
- expr=expr.replace(/\b(long|majus|minus|abs|racine)\s*\(/g,(m)=>{
-  const name=m.trim().replace("(","");
-  return ({long:"String",majus:"String",minus:"String",abs:"Math.abs",racine:"Math.sqrt"})[name]+"(";
- });
- expr=expr.replace(/\b([A-Za-zÀ-ÿ_]\w*)\b/g,(word)=>{
-  if(["true","false","Math","String"].includes(word))return word;
-  if(/^(String|Math)$/.test(word))return word;
-  if(Object.prototype.hasOwnProperty.call(env,word))return "env["+JSON.stringify(word)+"]";
-  return word;
- });
- // Only allow a deliberately limited expression grammar.
- if(!/^[\w\s"'.,()[\]!<>=+\-*\/%&|:]+$/u.test(expr))throw Error("Invalid expression: "+expr);
- if(/\b(?:window|document|globalThis|constructor|prototype|eval|Function|prompt|fetch)\b/i.test(expr))throw Error("Unsupported expression");
- try{
-  const fn=new Function("env",'"use strict"; return ('+expr+');');
-  return fn(env);
- }catch(e){throw Error("Expression error: "+e.message)}
+function tokenize(src){
+ const tokens=[];
+ let i=0;
+ while(i<src.length){
+  const c=src[i];
+  if(/\s/.test(c)){i++;continue}
+  if(c==='"'||c==="'"){
+   const q=c;let val="";i++;
+   while(i<src.length&&src[i]!==q){
+    if(src[i]==="\\"&&i+1<src.length){
+     i++;
+     const e=src[i++];
+     val+=e==="n"?"\n":e==="t"?"\t":e;
+    }else val+=src[i++];
+   }
+   if(src[i]!==q)throw Error("Chaîne non terminée");
+   i++;tokens.push({type:"string",value:val});continue;
+  }
+  const number=src.slice(i).match(/^\d+(?:[.,]\d+)?/);
+  if(number){tokens.push({type:"number",value:Number(number[0].replace(",","."))});i+=number[0].length;continue}
+  const word=src.slice(i).match(/^[\p{L}_][\p{L}\d_]*/u);
+  if(word){tokens.push({type:"word",value:word[0]});i+=word[0].length;continue}
+  const op=["<=",">=","<>","!=","←","<-",":=","+","-","*","/","=","<",">","(",")"].find(x=>src.startsWith(x,i));
+  if(op){tokens.push({type:"op",value:op});i+=op.length;continue}
+  throw Error("Caractère inattendu : "+c);
+ }
+ tokens.push({type:"end",value:""});
+ return tokens;
+}
+
+const precedence={ou:1,et:2,"=":3,"==":3,"<>":3,"!=":3,"<":3,">":3,"<=":3,">=":3,"+":4,"-":4,"*":5,"/":5,div:5,mod:5};
+
+function evaluate(src,env){
+ const t=tokenize(src);let p=0;
+ const peek=()=>t[p],take=()=>t[p++];
+ function primary(){
+  const x=take();
+  if(x.type==="number"||x.type==="string")return x.value;
+  if(x.type==="word"){
+   const n=norm(x.value);
+   if(n==="vrai")return true;
+   if(n==="faux")return false;
+   if(n==="non")return !Boolean(primary());
+   if(!Object.prototype.hasOwnProperty.call(env,x.value))throw Error("Variable inconnue : "+x.value);
+   return env[x.value];
+  }
+  if(x.value==="("){
+   const v=expr(0);
+   if(take().value!==")")throw Error("Parenthèse fermante attendue");
+   return v;
+  }
+  if(x.value==="-"||x.value==="+")return (x.value==="-"?-1:1)*Number(primary());
+  throw Error("Expression invalide près de "+x.value);
+ }
+ function expr(min){
+  let left=primary();
+  while(true){
+   const x=peek(),op=x.type==="word"?norm(x.value):x.value;
+   const pr=precedence[op];
+   if(pr===undefined||pr<min)break;
+   take();const right=expr(pr+1);
+   switch(op){
+    case "+":left=typeof left==="string"||typeof right==="string"?String(left)+String(right):Number(left)+Number(right);break;
+    case "-":left=Number(left)-Number(right);break;
+    case "*":left=Number(left)*Number(right);break;
+    case "/":if(Number(right)===0)throw Error("Division par zéro");left=Number(left)/Number(right);break;
+    case "div":if(Number(right)===0)throw Error("Division par zéro");left=Math.trunc(Number(left)/Number(right));break;
+    case "mod":if(Number(right)===0)throw Error("Modulo par zéro");left=Number(left)%Number(right);break;
+    case "et":left=Boolean(left)&&Boolean(right);break;
+    case "ou":left=Boolean(left)||Boolean(right);break;
+    case "=":case "==":left=left===right;break;
+    case "<>":case "!=":left=left!==right;break;
+    case "<":left=left<right;break;
+    case ">":left=left>right;break;
+    case "<=":left=left<=right;break;
+    case ">=":left=left>=right;break;
+   }
+  }
+  return left;
+ }
+ const value=expr(0);
+ if(peek().type!=="end")throw Error("Élément inattendu : "+peek().value);
+ return value;
 }
 
 function parse(source){
- const lines=source.split(/\r?\n/).map((raw,i)=>({text:stripComment(raw),line:i+1})).filter(x=>x.text);
- let i=0,vars={};
+ const lines=source.split(/\r?\n/).map((raw,index)=>({s:raw.trim(),line:index+1})).filter(x=>x.s);
+ let i=0,types={},env={};
  while(i<lines.length){
-  let s=lines[i].text,n=normalize(s);
+  const {s}=lines[i],n=norm(s);
   if(n==="variables"||n==="debut"||n==="fin"||n.startsWith("algorithme ")){i++;continue}
-  let d=s.match(/^([\p{L}_][\p{L}\d_]*(?:\s*,\s*[\p{L}_][\p{L}\d_]*)*)\s*:\s*(entier|réel|reel|chaine|chaîne|booléen|booleen)$/iu);
-  if(d){d[1].split(",").forEach(v=>vars[v.trim()]=0);i++;continue}
+  const m=s.match(/^([\p{L}_][\p{L}\d_]*(?:\s*,\s*[\p{L}_][\p{L}\d_]*)*)\s*:\s*(entier|réel|reel|chaine|chaîne|booléen|booleen)$/iu);
+  if(m){
+   for(const name of m[1].split(",").map(x=>x.trim())){
+    if(types[name])throw Error("Variable déjà déclarée : "+name);
+    types[name]=norm(m[2]);
+    env[name]=types[name]==="chaine"?"":types[name]==="booleen"?false:0;
+   }
+   i++;continue;
+  }
   break;
  }
+
  function block(stops=[]){
-  let out=[];
-  while(i<lines.length&&!stops.includes(normalize(lines[i].text))){
-   let row=lines[i],s=row.text,n=normalize(s),m;
+  const body=[];
+  while(i<lines.length&&!stops.includes(norm(lines[i].s))){
+   const row=lines[i],s=row.s,n=norm(s);let m;
    if((m=s.match(/^si\s+(.+)\s+alors$/iu))){
-    i++;let yes=block(["sinon","finsi"]),no=[];
-    if(i<lines.length&&normalize(lines[i].text)==="sinon"){i++;no=block(["finsi"])}
-    if(i>=lines.length)throw Error("Missing FinSi at line "+row.line);
-    i++;out.push({type:"if",test:m[1],yes,no,line:row.line});continue;
+    i++;const yes=block(["sinon","finsi"]);let no=[];
+    if(i<lines.length&&norm(lines[i].s)==="sinon"){i++;no=block(["finsi"])}
+    if(i>=lines.length)throw Error("FinSi manquant ligne "+row.line);
+    i++;body.push({k:"if",test:m[1],yes,no,line:row.line});continue;
    }
-   if((m=s.match(/^pour\s+([\p{L}_]\w*)\s+de\s+(.+?)\s+à\s+(.+?)\s+faire$/iu))){
-    i++;let body=block(["finpour"]);
-    if(i>=lines.length)throw Error("Missing FinPour at line "+row.line);
-    i++;out.push({type:"for",name:m[1],from:m[2],to:m[3],body,line:row.line});continue;
+   if((m=s.match(/^pour\s+([\p{L}_][\p{L}\d_]*)\s+de\s+(.+?)\s+à\s+(.+?)\s+faire$/iu))){
+    i++;const b=block(["finpour"]);
+    if(i>=lines.length)throw Error("FinPour manquant ligne "+row.line);
+    i++;body.push({k:"for",name:m[1],from:m[2],to:m[3],body:b,line:row.line});continue;
    }
    if((m=s.match(/^tantque\s+(.+)\s+faire$/iu))){
-    i++;let body=block(["fintantque"]);
-    if(i>=lines.length)throw Error("Missing FinTantQue at line "+row.line);
-    i++;out.push({type:"while",test:m[1],body,line:row.line});continue;
+    i++;const b=block(["fintantque"]);
+    if(i>=lines.length)throw Error("FinTantQue manquant ligne "+row.line);
+    i++;body.push({k:"while",test:m[1],body:b,line:row.line});continue;
    }
-   if((m=s.match(/^(?:ecrire|écrire)\s*(?:\((.*)\)|(.*))$/iu))){
-    i++;let arg=(m[1]??m[2]??"").trim();
-    out.push({type:"print",args:arg?splitArgs(arg):[],line:row.line});continue;
+   if(n==="repeter"){
+    i++;const b=block(["jusqua","jusqu'a"]);
+    if(i>=lines.length)throw Error("Jusqu'à manquant ligne "+row.line);
+    const test=lines[i++].s.replace(/^jusqu['’]à\s*/i,"");
+    body.push({k:"repeat",test,body:b,line:row.line});continue;
    }
-   if((m=s.match(/^lire\s*\(\s*([\p{L}_]\w*)\s*\)$/iu))){
-    i++;out.push({type:"read",name:m[1],line:row.line});continue;
+   if((m=s.match(/^ecrire\s*\((.*)\)$/iu))){
+    i++;body.push({k:"print",args:splitArgs(m[1]),line:row.line});continue;
    }
-   if((m=s.match(/^([\p{L}_]\w*)\s*(?:←|<-|:=|=)\s*(.+)$/u))){
-    i++;out.push({type:"set",name:m[1],expr:m[2],line:row.line});continue;
+   if((m=s.match(/^lire\s*\(\s*([\p{L}_][\p{L}\d_]*)\s*\)$/iu))){
+    if(!types[m[1]])throw Error("Variable non déclarée : "+m[1]);
+    i++;body.push({k:"read",name:m[1],line:row.line});continue;
+   }
+   if((m=s.match(/^([\p{L}_][\p{L}\d_]*)\s*(?:←|<-|:=|=)\s*(.+)$/u))){
+    if(!types[m[1]])throw Error("Variable non déclarée : "+m[1]);
+    i++;body.push({k:"set",name:m[1],expr:m[2],line:row.line});continue;
    }
    if(n==="debut"||n==="fin"||n==="variables"||n.startsWith("algorithme ")){i++;continue}
-   throw Error("Unknown instruction at line "+row.line+": "+s);
+   throw Error("Instruction inconnue ligne "+row.line+": "+s);
   }
-  return out;
+  return body;
  }
- return {body:block(),vars};
+ const body=block();
+ if(i<lines.length)throw Error("Instruction inattendue ligne "+lines[i].line);
+ return {body,types,env};
 }
 
-function run(){
- clearOutput();
- try{
-  const program=parse(editor.value),env={...program.vars};
-  let count=0;
-  function execute(body){
-   for(const s of body){
-    if(++count>100000)throw Error("Execution limit reached. Possible infinite loop.");
-    if(s.type==="print"){
-     print(s.args.map(x=>evalExpr(x,env)).join(" "));
-    }else if(s.type==="set"){
-     if(!(s.name in env))throw Error("Variable "+s.name+" is not declared (line "+s.line+")");
-     env[s.name]=evalExpr(s.expr,env);
-    }else if(s.type==="read"){
-     const v=prompt("Enter value for "+s.name);
-     if(v===null)throw Error("Input cancelled");
-     env[s.name]=isNaN(v)?v:Number(v);
-    }else if(s.type==="if"){
-     execute(evalExpr(s.test,env)?s.yes:s.no);
-    }else if(s.type==="for"){
-     let start=Number(evalExpr(s.from,env)),end=Number(evalExpr(s.to,env));
-     let step=start<=end?1:-1;
-     for(let x=start;step>0?x<=end:x>=end;x+=step){
-      env[s.name]=x;execute(s.body);
-      if(++count>100000)throw Error("Loop limit reached");
-     }
-    }else if(s.type==="while"){
-     let guard=0;
-     while(evalExpr(s.test,env)){
-      execute(s.body);
-      if(++guard>10000)throw Error("TantQue loop limit reached at line "+s.line);
-     }
+function execute(program){
+ let steps=0;const env=program.env;
+ function exec(body){
+  for(const s of body){
+   if(++steps>100000)throw Error("Limite d'exécution atteinte");
+   if(s.k==="print"){
+    const values=s.args.map(x=>evaluate(x,env));
+    output(values.map(String).join(" "));
+   }else if(s.k==="set"){
+    const v=evaluate(s.expr,env),type=program.types[s.name];
+    if(type==="entier"&&!Number.isInteger(v))throw Error(s.name+" attend un entier");
+    if(type==="reel"&&typeof v!=="number")throw Error(s.name+" attend un nombre");
+    if(type==="chaine"&&typeof v!=="string")throw Error(s.name+" attend une chaîne");
+    if(type==="booleen"&&typeof v!=="boolean")throw Error(s.name+" attend un booléen");
+    env[s.name]=v;
+   }else if(s.k==="read"){
+    const raw=prompt("Valeur pour "+s.name);
+    if(raw===null)throw Error("Saisie annulée");
+    const type=program.types[s.name];let v=raw;
+    if(type==="entier"||type==="reel"){
+     v=Number(raw.replace(",","."));
+     if(!Number.isFinite(v)||(type==="entier"&&!Number.isInteger(v)))throw Error("Valeur numérique invalide");
+    }else if(type==="booleen"){
+     if(norm(raw)==="vrai")v=true;else if(norm(raw)==="faux")v=false;else throw Error("Saisir Vrai ou Faux");
     }
+    env[s.name]=v;
+   }else if(s.k==="if")exec(evaluate(s.test,env)?s.yes:s.no);
+   else if(s.k==="for"){
+    const a=Number(evaluate(s.from,env)),b=Number(evaluate(s.to,env)),step=a<=b?1:-1;
+    for(let x=a;step>0?x<=b:x>=b;x+=step){env[s.name]=x;exec(s.body);if(++steps>100000)throw Error("Limite de boucle atteinte")}
+   }else if(s.k==="while"){
+    let count=0;while(evaluate(s.test,env)){exec(s.body);if(++count>10000)throw Error("Limite TantQue atteinte")}
+   }else if(s.k==="repeat"){
+    let count=0;do{exec(s.body);if(++count>10000)throw Error("Limite Répéter atteinte")}while(!evaluate(s.test,env));
    }
   }
-  execute(program.body);
-  print("✓ Program finished successfully.");
- }catch(e){fail(e.message)}
+ }
+ exec(program.body);
 }
-update();
+
+function runProgram(){
+ clearOutput();
+ try{
+  const program=parse(editor.getValue());
+  execute(program);
+  output("✓ Program finished successfully","success");
+  status("Execution successful");
+ }catch(e){
+  output("ERROR: "+e.message,"error");
+  status("Execution error");
+ }
+}
+
+const docs={
+Algorithme:"Starts a program.",
+Variables:"Starts variable declarations.",
+Début:"Starts the instructions.",
+Fin:"Ends the algorithm.",
+Ecrire:"Displays text and values. Example: Ecrire(\"Total : \", total).",
+Lire:"Reads a value into a variable.",
+Si:"Starts a conditional block.",
+Alors:"Starts the body of a condition.",
+Sinon:"Alternative branch of a condition.",
+FinSi:"Closes a conditional block.",
+Pour:"Repeats instructions over a range.",
+Faire:"Starts a loop body.",
+FinPour:"Closes a Pour loop.",
+TantQue:"Repeats while a condition is true.",
+FinTantQue:"Closes a TantQue loop.",
+Répéter:"Runs a block at least once.",
+"Jusqu'à":"Ends a Répéter block when its condition is true."
+};
+
+function analyze(){
+ if(!monacoReady)return;
+ clearTimeout(timer);
+ timer=setTimeout(()=>{
+  const model=editor.getModel();
+  try{
+   parse(editor.getValue());
+   monaco.editor.setModelMarkers(model,"algorizmi",[]);
+   status("No syntax errors");
+  }catch(e){
+   const m=e.message.match(/ligne\s+(\d+)/i);
+   const line=m?Math.min(Number(m[1]),model.getLineCount()):1;
+   monaco.editor.setModelMarkers(model,"algorizmi",[{
+    severity:monaco.MarkerSeverity.Error,
+    message:e.message,
+    startLineNumber:line,startColumn:1,
+    endLineNumber:line,endColumn:model.getLineMaxColumn(line)
+   }]);
+   status("Problem detected");
+  }
+ },200);
+}
+
+require.config({
+ paths:{vs:"https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs"}
+});
+
+require(["vs/editor/editor.main"],()=>{
+ monacoReady=true;
+ monaco.languages.register({id:"algorizmi"});
+ monaco.languages.setMonarchTokensProvider("algorizmi",{
+  tokenizer:{root:[
+   [/\/\/.*$/,"comment"],
+   [/"([^"\\]|\\.)*"/,"string"],
+   [/'([^'\\]|\\.)*'/,"string"],
+   [/\b(entier|réel|reel|chaine|booléen|booleen)\b/i,"type"],
+   [/\b(Algorithme|Variables|Début|Fin|Ecrire|Lire|Si|Alors|Sinon|FinSi|Pour|de|à|Faire|FinPour|TantQue|FinTantQue|Répéter|Jusqu'à|Vrai|Faux|et|ou|non|div|mod)\b/i,"keyword"],
+   [/\d+([.,]\d+)?/,"number"],
+   [/←|<-|:=|<=|>=|<>|[=+\-*\/<>]/,"operator"],
+   [/[a-zA-ZÀ-ÿ_][\wÀ-ÿ]*/,"identifier"]
+  ]}
+ });
+
+ monaco.editor.defineTheme("aero",{
+  base:"vs",inherit:true,
+  rules:[
+   {token:"keyword",foreground:"087EAE",fontStyle:"bold"},
+   {token:"type",foreground:"9860B5"},
+   {token:"string",foreground:"16875C"},
+   {token:"number",foreground:"C47B27"},
+   {token:"comment",foreground:"8AA3AD",fontStyle:"italic"},
+   {token:"operator",foreground:"1687B2"}
+  ],
+  colors:{
+   "editor.background":"#F5FCFF",
+   "editorLineNumber.foreground":"#9BB8C5",
+   "editorLineNumber.activeForeground":"#277C9D",
+   "editorCursor.foreground":"#087DB9",
+   "editor.selectionBackground":"#8EDCF477",
+   "editor.lineHighlightBackground":"#E9F8FC",
+   "editorGutter.background":"#F5FCFF"
+  }
+ });
+
+ editor=monaco.editor.create(document.getElementById("editor"),{
+  value:examples.calc,language:"algorizmi",theme:"aero",
+  automaticLayout:true,fontFamily:"Consolas, monospace",
+  fontSize:14,lineHeight:24,minimap:{enabled:false},
+  scrollBeyondLastLine:false,wordWrap:"on",tabSize:2,
+  quickSuggestions:true,suggestOnTriggerCharacters:true,
+  parameterHints:{enabled:true},padding:{top:14,bottom:14}
+ });
+
+ editor.onDidChangeModelContent(analyze);
+ editor.addCommand(monaco.KeyMod.CtrlCmd|monaco.KeyCode.Enter,runProgram);
+
+ const keywords=Object.keys(docs).concat([
+  "entier","réel","chaine","booléen","Vrai","Faux","et","ou","non","div","mod"
+ ]);
+
+ monaco.languages.registerCompletionItemProvider("algorizmi",{
+  triggerCharacters:[" ","."],
+  provideCompletionItems(model,pos){
+   const word=model.getWordUntilPosition(pos);
+   const range={
+    startLineNumber:pos.lineNumber,endLineNumber:pos.lineNumber,
+    startColumn:word.startColumn,endColumn:word.endColumn
+   };
+   const vars=[...model.getValue().matchAll(
+    /^\s*([\p{L}_][\p{L}\d_]*(?:\s*,\s*[\p{L}_][\p{L}\d_]*)*)\s*:\s*(?:entier|réel|reel|chaine|booléen)/gimu
+   )].flatMap(m=>m[1].split(",").map(x=>x.trim()));
+   const suggestions=keywords.map(k=>({
+    label:k,kind:monaco.languages.CompletionItemKind.Keyword,
+    insertText:k,range,detail:"Algorizmi keyword",
+    documentation:docs[k]||"Algorizmi language keyword"
+   }));
+   for(const v of new Set(vars))suggestions.push({
+    label:v,kind:monaco.languages.CompletionItemKind.Variable,
+    insertText:v,range,detail:"Declared variable"
+   });
+   return {suggestions};
+  }
+ });
+
+ monaco.languages.registerHoverProvider("algorizmi",{
+  provideHover(model,pos){
+   const w=model.getWordAtPosition(pos);
+   if(!w)return;
+   return {contents:[
+    {value:"**"+w.word+"**"},
+    {value:docs[w.word]||"Algorizmi identifier"}
+   ]};
+  }
+ });
+
+ monaco.languages.registerCodeActionProvider("algorizmi",{
+  provideCodeActions(model,range,context){
+   const actions=[];
+   for(const m of context.markers){
+    const match=m.message.match(/(FinSi|FinPour|FinTantQue|Jusqu'à) manquant/i);
+    if(match){
+     const end=model.getLineCount();
+     actions.push({
+      title:"Insert "+match[1],
+      kind:"quickfix",
+      isPreferred:true,
+      edit:{edits:[{
+       resource:model.uri,
+       edit:{
+        range:new monaco.Range(end,model.getLineMaxColumn(end),end,model.getLineMaxColumn(end)),
+        text:"\n"+match[1]
+       }
+      }]}
+     });
+    }
+   }
+   return {actions,dispose(){}};
+  }
+ });
+
+ editor.focus();
+ analyze();
+});
 </script>
 </body>
 </html>
