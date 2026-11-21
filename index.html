@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,96 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Algorizmi Studio</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+<script>
+/* ===== ADDITIVE WORKSPACE FEATURES. The original Algorizmi interpreter above remains unchanged. ===== */
+let activeWorkspace="algo";
+function selectWorkspace(name){
+  activeWorkspace=name;
+  ["algo","web","python"].forEach(key=>{
+    const tab=$("tab"+key[0].toUpperCase()+key.slice(1));
+    if(tab)tab.classList.toggle("active",key===name);
+  });
+  $("webWorkspace").classList.toggle("active",name==="web");
+  $("pythonWorkspace").classList.toggle("active",name==="python");
+  document.querySelector("#studio .layout").style.display=name==="algo"?"grid":"none";
+  if(name==="web"&&!$("webPreview").srcdoc)runWebWorkspace();
+}
+function runWebWorkspace(){
+  const html=$("webHTML").value;
+  const css=$("webCSS").value.replace(/<\/style/gi,"<\\/style");
+  $("webPreview").srcdoc="<!doctype html><html><head><meta charset='utf-8'><style>"+css+"</style></head><body>"+html+"</body></html>";
+}
+function resetWebWorkspace(){
+  $("webHTML").value=`<main class="card">
+  <h1>Hello, web!</h1>
+  <p>Build something brilliant with Algorizmi.</p>
+  <button onclick="document.querySelector('p').textContent='It works!'">Try me</button>
+</main>`;
+  $("webCSS").value=`body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #b8eaf5, #effdff);
+}
+.card {
+  padding: 32px;
+  border-radius: 24px;
+  background: #ffffffbb;
+  box-shadow: 0 15px 40px #397e9d30;
+  color: #16475e;
+}`;
+  runWebWorkspace();
+}
+function downloadWebWorkspace(){
+  const html="<!doctype html><html><head><meta charset='utf-8'><style>"+$("webCSS").value+"</style></head><body>"+$("webHTML").value+"</body></html>";
+  const blob=new Blob([html],{type:"text/html;charset=utf-8"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="algorizmi-web-project.html";a.click();URL.revokeObjectURL(url);
+}
+let pyodideInstance=null,pyodideLoading=null;
+async function loadPyodideRuntime(){
+  if(pyodideInstance)return pyodideInstance;
+  if(!pyodideLoading){
+    $("pythonStatus").textContent="Loading Python runtime...";
+    pyodideLoading=(async()=>{
+      if(!window.loadPyodide){
+        await new Promise((resolve,reject)=>{
+          const script=document.createElement("script");
+          script.src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js";
+          script.onload=resolve;script.onerror=()=>reject(Error("Could not load Pyodide. Check your internet connection."));
+          document.head.appendChild(script);
+        });
+      }
+      pyodideInstance=await loadPyodide();
+      return pyodideInstance;
+    })();
+  }
+  try{return await pyodideLoading;}
+  catch(error){pyodideLoading=null;throw error;}
+}
+async function runPythonWorkspace(){
+  const out=$("pythonOutput");
+  out.textContent="";
+  $("pythonStatus").textContent="Running...";
+  try{
+    const py=await loadPyodideRuntime();
+    let outputText="";
+    py.setStdout({batched:text=>outputText+=text+"\n"});
+    py.setStderr({batched:text=>outputText+=text+"\n"});
+    await py.runPythonAsync($("pythonCode").value);
+    out.textContent=outputText||"Program finished successfully.";
+    $("pythonStatus").textContent="Finished";
+  }catch(error){
+    out.textContent=String(error);
+    $("pythonStatus").textContent="Execution error";
+  }
+}
+function clearPythonOutput(){
+  $("pythonOutput").textContent="";
+  $("pythonStatus").textContent="Ready";
+}
+</script>
 
 <style>
 :root {
@@ -277,6 +368,140 @@ footer{text-align:center;color:#7295a5;font-size:11px;margin-top:30px;padding:12
   .memory-grid{grid-template-columns:repeat(4,55px)}
   .memory-cell{width:55px;height:55px}
 }
+
+/* ===== ADDITIVE FRUTIGER AERO + WORKSPACE STYLES ===== */
+.hero{
+  background:
+    radial-gradient(ellipse at 15% 0%,#ffffffef,transparent 42%),
+    linear-gradient(135deg,#ffffffdc,#d4f6fbd9 55%,#a7e5f0aa);
+}
+.hero:after{
+  content:"";
+  position:absolute;
+  width:260px;height:260px;
+  right:-70px;top:-100px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#9ce5f1aa 55%,#55b8dc33 75%,transparent 76%);
+  pointer-events:none;
+}
+.orbit-wrap{
+  min-height:340px;
+  display:grid;
+  place-items:center;
+  position:relative;
+  margin:26px auto 10px;
+  overflow:hidden;
+}
+.orbit{
+  width:min(310px,72vw);
+  aspect-ratio:1;
+  border:1px solid #ffffffd9;
+  border-radius:50%;
+  position:absolute;
+  box-shadow:0 0 30px #51bde833,inset 0 0 25px #ffffffaa;
+  animation:orbitPulse 5s ease-in-out infinite;
+}
+.orbit:before,.orbit:after{
+  content:"";
+  position:absolute;
+  inset:18px;
+  border:1px dashed #50b9d477;
+  border-radius:50%;
+}
+.orbit:after{inset:42px;border-style:solid;opacity:.45}
+@keyframes orbitPulse{50%{transform:scale(1.04);opacity:.65}}
+.orbit-core{
+  z-index:2;
+  width:112px;height:112px;
+  border-radius:34px;
+  display:grid;place-items:center;
+  font:800 34px Consolas,monospace;
+  color:#087ba8;
+  background:linear-gradient(145deg,#ffffff,#a9e9f5);
+  border:1px solid white;
+  box-shadow:0 15px 35px #277f9d44,inset 0 3px 8px white;
+  animation:coreFloat 4s ease-in-out infinite;
+}
+@keyframes coreFloat{50%{transform:translateY(-8px)}}
+.orbit-label{
+  position:absolute;
+  z-index:3;
+  padding:9px 13px;
+  border-radius:14px;
+  background:linear-gradient(145deg,#ffffffed,#c7edf5d9);
+  border:1px solid white;
+  box-shadow:0 7px 18px #287f9d22,inset 0 1px 2px white;
+  font-size:12px;font-weight:800;
+  animation:labelFloat 5s ease-in-out infinite;
+}
+.orbit-label:nth-child(2){top:7%;left:calc(50% - 35px)}
+.orbit-label:nth-child(3){top:28%;right:5%;animation-delay:-1s}
+.orbit-label:nth-child(4){bottom:12%;right:16%;animation-delay:-2s}
+.orbit-label:nth-child(5){bottom:12%;left:15%;animation-delay:-3s}
+.orbit-label:nth-child(6){top:28%;left:5%;animation-delay:-4s}
+@keyframes labelFloat{50%{transform:translateY(-10px) rotate(2deg)}}
+.workspace-tabs{
+  display:flex;gap:8px;flex-wrap:wrap;
+  padding:12px;
+  margin-bottom:14px;
+  border-radius:18px;
+  background:#ffffff75;
+  border:1px solid white;
+  box-shadow:0 8px 24px #397e9d1c,inset 0 1px 2px white;
+  backdrop-filter:blur(15px);
+}
+.workspace-tab.active{
+  color:white;
+  background:linear-gradient(135deg,#27c4e5,#087cae);
+}
+.workspace-view{display:none}
+.workspace-view.active{display:block}
+.workspace-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.workspace-grid textarea{
+  width:100%;min-height:330px;resize:vertical;
+  border:1px solid #ffffff;
+  border-radius:0 0 16px 16px;
+  padding:16px;
+  background:#f5fcff;
+  color:#16475e;
+  font:13px/1.65 Consolas,monospace;
+  outline:none;
+}
+.workspace-grid textarea:focus{box-shadow:inset 0 0 0 2px #66d8ed}
+.workspace-grid .panel{min-width:0}
+.workspace-grid iframe{
+  width:100%;height:390px;border:0;background:white;
+  border-radius:0 0 16px 16px;
+}
+.workspace-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.python-output{
+  min-height:160px;max-height:300px;overflow:auto;
+  padding:14px;background:#f6fdff;
+  color:#28576c;white-space:pre-wrap;
+  font:13px/1.7 Consolas,monospace;
+}
+.home-orbit{
+  display:grid;grid-template-columns:1.1fr .9fr;
+  gap:16px;align-items:center;
+}
+.partner-card{
+  padding:20px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#ffffffd9,#cbe bff8c);
+  border:1px solid white;
+  box-shadow:0 12px 30px #397e9d1c,inset 0 1px 2px white;
+}
+.partner-card h3{margin:0 0 8px}
+.partner-card p{font-size:13px;line-height:1.65;color:#527e91}
+.partner-link{display:inline-block;margin-top:7px;text-decoration:none}
+@media(max-width:850px){
+  .home-orbit{grid-template-columns:1fr}
+  .workspace-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 
@@ -305,16 +530,29 @@ footer{text-align:center;color:#7295a5;font-size:11px;margin-top:30px;padding:12
 <main>
 <section class="page active" id="home">
   <div class="hero">
-    <h2>Code in your language.</h2>
-    <p>
-      Welcome to Algorizmi Studio — an educational programming environment
-      built around the algorithmic notation used in Tunisian classrooms.
-      Write algorithms, experiment with logic, and learn by building.
-    </p>
-    <div class="hero-actions">
-      <button class="primary" onclick="showPage('studio')">Open Studio →</button>
-      <button onclick="showPage('arcade')">Explore the Arcade</button>
-      <button onclick="showPage('guide')">Learn the language</button>
+    <div class="home-orbit">
+      <div>
+        <h2>Code in your language.</h2>
+        <p>
+          Welcome to Algorizmi Studio — an educational programming environment
+          built around the algorithmic notation used in Tunisian classrooms.
+          Write algorithms, experiment with logic, and learn by building.
+        </p>
+        <div class="hero-actions">
+          <button class="primary" onclick="showPage('studio')">Open Studio →</button>
+          <button onclick="showPage('arcade')">Explore the Arcade</button>
+          <button onclick="showPage('guide')">Learn the language</button>
+        </div>
+      </div>
+      <div class="orbit-wrap">
+        <div class="orbit"></div>
+        <div class="orbit-core">&gt;_</div>
+        <div class="orbit-label">ALGO</div>
+        <div class="orbit-label">HTML</div>
+        <div class="orbit-label">CSS</div>
+        <div class="orbit-label">PYTHON</div>
+        <div class="orbit-label">JS</div>
+      </div>
     </div>
   </div>
 
@@ -336,9 +574,104 @@ footer{text-align:center;color:#7295a5;font-size:11px;margin-top:30px;padding:12
       <p>Play small games and explore the algorithmic ideas behind them.</p>
     </div>
   </div>
+
+  <h2 class="section-title">Explore more languages</h2>
+  <div class="cards">
+    <div class="panel guide-card">
+      <div class="game-icon">🌐</div>
+      <h3>HTML & CSS</h3>
+      <p>Create webpages and see your changes in a live preview.</p>
+      <button onclick="showPage('studio');selectWorkspace('web')">Open Web Studio</button>
+    </div>
+    <div class="panel guide-card">
+      <div class="game-icon">🐍</div>
+      <h3>Python</h3>
+      <p>Write and run Python code in your browser.</p>
+      <button onclick="showPage('studio');selectWorkspace('python')">Open Python Studio</button>
+    </div>
+  </div>
+
+  <h2 class="section-title">Our learning partner</h2>
+  <div class="partner-card">
+    <h3>Algorizmi × Algo Lab</h3>
+    <p>We're partnered with Algo Lab. Explore learning resources and continue developing your programming skills with our partner.</p>
+    <a class="partner-link" href="https://chabenmouhamedahmed-creator.github.io/info/" target="_blank" rel="noopener noreferrer">
+      <button class="primary">Visit Algo Lab ↗</button>
+    </a>
+  </div>
 </section>
 
 <section class="page" id="studio">
+  <div class="workspace-tabs">
+    <button class="workspace-tab active" id="tabAlgo" onclick="selectWorkspace('algo')">◈ Algorithmique</button>
+    <button class="workspace-tab" id="tabWeb" onclick="selectWorkspace('web')">🌐 HTML / CSS</button>
+    <button class="workspace-tab" id="tabPython" onclick="selectWorkspace('python')">🐍 Python</button>
+  </div>
+
+  <div class="workspace-view" id="webWorkspace">
+    <div class="workspace-actions">
+      <button class="primary" onclick="runWebWorkspace()">▶ Run preview</button>
+      <button onclick="resetWebWorkspace()">Reset example</button>
+      <button onclick="downloadWebWorkspace()">Save HTML project</button>
+    </div>
+    <div class="workspace-grid">
+      <section class="panel">
+        <div class="panel-heading">HTML editor</div>
+        <textarea id="webHTML" spellcheck="false"><main class="card">
+  <h1>Hello, web!</h1>
+  <p>Build something brilliant with Algorizmi.</p>
+  <button onclick="document.querySelector('p').textContent='It works!'">Try me</button>
+</main></textarea>
+      </section>
+      <section class="panel">
+        <div class="panel-heading">CSS editor</div>
+        <textarea id="webCSS" spellcheck="false">body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #b8eaf5, #effdff);
+}
+.card {
+  padding: 32px;
+  border-radius: 24px;
+  background: #ffffffbb;
+  box-shadow: 0 15px 40px #397e9d30;
+  color: #16475e;
+}</textarea>
+      </section>
+    </div>
+    <section class="panel" style="margin-top:14px">
+      <div class="panel-heading">Live browser preview</div>
+      <iframe id="webPreview" title="Web project preview" sandbox="allow-scripts"></iframe>
+    </section>
+  </div>
+
+  <div class="workspace-view" id="pythonWorkspace">
+    <div class="workspace-actions">
+      <button class="primary" onclick="runPythonWorkspace()">▶ Run Python</button>
+      <button onclick="clearPythonOutput()">Clear output</button>
+    </div>
+    <div class="workspace-grid">
+      <section class="panel">
+        <div class="panel-heading">Python editor</div>
+        <textarea id="pythonCode" spellcheck="false">name = "Algorizmi"
+print("Hello from", name)
+
+for i in range(1, 6):
+    print("Loop:", i)</textarea>
+      </section>
+      <section class="panel">
+        <div class="panel-heading">
+          <span>Python console</span>
+          <small id="pythonStatus">Ready · Runtime loads on first run</small>
+        </div>
+        <pre class="python-output" id="pythonOutput">Python output will appear here.</pre>
+      </section>
+    </div>
+    <p style="font-size:12px;color:#62889a">Python runs locally in your browser using Pyodide. The first run downloads the Python runtime and requires an internet connection.</p>
+  </div>
+
   <div class="layout">
     <section class="panel editor-panel">
       <div class="panel-heading">
@@ -1207,7 +1540,6 @@ function analyze(){
     updateCounts();
   },250);
 }
-
 function showRunError(error){
   const model=editor&&editor.getModel();
   if(!model)return;
@@ -1238,7 +1570,6 @@ fallback.addEventListener("keydown",e=>{
 require.config({
   paths:{vs:"https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs"}
 });
-
 require(["vs/editor/editor.main"],()=>{
   monacoReady=true;
 
@@ -1429,30 +1760,31 @@ Début
   Si reponse = a + b Alors
     Ecrire("Correct !")
   Sinon
-    Ecrire("Essaie encore")
+    Ecrire("Essaie encore.")
   FinSi
 Fin`,
 
 reaction:`Algorithme Reaction
 Variables
-pret : booleen
+depart, arrivee, temps : entier
 Début
-  pret ← Faux
-  Ecrire("Attends le signal...")
-  pret ← Vrai
-  Ecrire("Maintenant !")
+  Ecrire("Attends le signal puis réagis.")
+  depart ← 0
+  arrivee ← 0
+  temps ← arrivee - depart
+  Ecrire("Temps : ", temps)
 Fin`,
 
 higher:`Algorithme PlusOuMoins
 Variables
-nombre, choix : entier
+nombre, suivant : entier
 Début
-  nombre ← Alea(1, 100)
-  Lire(choix)
-  Si choix > nombre Alors
-    Ecrire("Trop grand")
+  nombre ← Alea(1, 13)
+  suivant ← Alea(1, 13)
+  Si suivant > nombre Alors
+    Ecrire("Plus grand")
   Sinon
-    Ecrire("Trop petit ou égal")
+    Ecrire("Plus petit ou égal")
   FinSi
 Fin`
 };
@@ -1460,21 +1792,20 @@ Fin`
 function startGame(name){
   $("gameCards").classList.add("hidden");
   $("gameScreen").classList.remove("hidden");
-  showPage("arcade");
-  gameSource=gameExamples[name]||"";
-  $("gameCode").textContent=gameSource;
-  const area=$("gameArea");
-  area.innerHTML="";
-  const title={
+  const titles={
     guess:"Number Guess",
     rps:"Rock Paper Scissors",
     memory:"Memory Match",
     math:"Math Sprint",
     reaction:"Reaction Test",
     higher:"Higher or Lower"
-  }[name]||"Game";
-  $("gameTitle").textContent=title;
+  };
+  $("gameTitle").textContent=titles[name]||"Game";
+  gameSource=gameExamples[name]||"";
+  $("gameCode").textContent=gameSource;
 
+  const area=$("gameArea");
+  area.innerHTML="";
   if(name==="guess")gameGuess(area);
   if(name==="rps")gameRPS(area);
   if(name==="memory")gameMemory(area);
@@ -1487,132 +1818,133 @@ function closeGame(){
   $("gameCards").classList.remove("hidden");
 }
 function copyGameCode(){
-  navigator.clipboard.writeText(gameSource).then(()=>alert("Algorithm copied!"));
+  navigator.clipboard.writeText(gameSource);
 }
 function openGameCode(){
   showPage("studio");
+  selectWorkspace("algo");
   setCode(gameSource);
-  status("Game example loaded");
+  status("Game algorithm loaded");
 }
 function gameGuess(area){
-  let secret=Math.floor(Math.random()*20)+1;
+  const secret=Math.floor(Math.random()*20)+1;
   let tries=0;
   area.innerHTML=`
     <h2>Guess the number</h2>
     <p>I'm thinking of a number between 1 and 20.</p>
-    <input id="guessInput" type="number" min="1" max="20" placeholder="Number">
-    <div class="game-actions"><button class="primary" id="guessBtn">Guess</button><button id="guessReset">New game</button></div>
-    <div class="game-result" id="guessResult"></div>
-    <div id="guessTries">Attempts: 0</div>`;
-  $("guessBtn").onclick=()=>{
-    const n=Number($("guessInput").value);
-    if(!Number.isInteger(n)||n<1||n>20){$("guessResult").textContent="Enter a number from 1 to 20.";return}
+    <input id="guessInput" type="number" min="1" max="20" placeholder="Your guess">
+    <button class="primary" id="guessButton">Guess</button>
+    <div class="game-result" id="guessResult"></div>`;
+  $("guessButton").onclick=()=>{
+    const value=Number($("guessInput").value);
+    if(!value||value<1||value>20){
+      $("guessResult").textContent="Enter a number from 1 to 20.";
+      return;
+    }
     tries++;
-    if(n===secret)$("guessResult").textContent="Correct! You got it in "+tries+" tries.";
-    else $("guessResult").textContent=n<secret?"Too low. Try again!":"Too high. Try again!";
-    $("guessTries").textContent="Attempts: "+tries;
+    $("guessResult").textContent=value===secret
+      ?"Correct! You got it in "+tries+" tries."
+      :value<secret?"Too low. Try again!":"Too high. Try again!";
   };
-  $("guessReset").onclick=()=>gameGuess(area);
 }
 function gameRPS(area){
   area.innerHTML=`
     <h2>Rock Paper Scissors</h2>
     <p>Choose your move.</p>
     <div class="game-actions">
-      <button data-rps="Rock">✊ Rock</button>
-      <button data-rps="Paper">✋ Paper</button>
-      <button data-rps="Scissors">✌️ Scissors</button>
+      <button data-choice="rock">Rock</button>
+      <button data-choice="paper">Paper</button>
+      <button data-choice="scissors">Scissors</button>
     </div>
     <div class="game-result" id="rpsResult"></div>`;
-  area.querySelectorAll("[data-rps]").forEach(btn=>{
-    btn.onclick=()=>{
-      const user=btn.dataset.rps;
-      const choices=["Rock","Paper","Scissors"];
-      const cpu=choices[Math.floor(Math.random()*3)];
-      let result=user===cpu?"It's a tie!":
-        (user==="Rock"&&cpu==="Scissors")||
-        (user==="Paper"&&cpu==="Rock")||
-        (user==="Scissors"&&cpu==="Paper")?"You win!":"Computer wins!";
-      $("rpsResult").textContent="You: "+user+" · Computer: "+cpu+" · "+result;
+  area.querySelectorAll("[data-choice]").forEach(button=>{
+    button.onclick=()=>{
+      const choices=["rock","paper","scissors"];
+      const computer=choices[Math.floor(Math.random()*3)];
+      const user=button.dataset.choice;
+      const result=user===computer?"Draw":
+        (user==="rock"&&computer==="scissors")||
+        (user==="paper"&&computer==="rock")||
+        (user==="scissors"&&computer==="paper")?"You win!":"Computer wins!";
+      $("rpsResult").textContent="You: "+user+" · Computer: "+computer+" · "+result;
     };
   });
 }
 function gameMemory(area){
-  const symbols=["🍋","🌊","⭐","🍀","🍉","🌸","🍇","☀️"];
-  let cards=[...symbols,...symbols].sort(()=>Math.random()-.5);
-  let first=null,lock=false,matches=0,moves=0;
-  area.innerHTML=`<h2>Memory Match</h2><p>Find all matching pairs.</p><div class="memory-grid" id="memoryGrid"></div><div class="game-result" id="memoryResult">Moves: 0</div><button id="memoryReset">Restart</button>`;
+  const symbols=["◆","●","▲","★","♥","☀","✦","⬟"];
+  const deck=[...symbols,...symbols].sort(()=>Math.random()-.5);
+  let first=null,lock=false,matches=0;
+  area.innerHTML=`<h2>Memory Match</h2><p>Find all matching pairs.</p><div class="memory-grid" id="memoryGrid"></div><div class="game-result" id="memoryResult">0 / 8 pairs</div>`;
   const grid=$("memoryGrid");
-  cards.forEach((symbol,index)=>{
-    const b=document.createElement("button");
-    b.className="memory-cell";
-    b.textContent="?";
-    b.dataset.symbol=symbol;
-    b.onclick=()=>{
-      if(lock||b.classList.contains("matched")||b===first)return;
-      b.textContent=symbol;
-      if(!first){first=b;return}
-      moves++;
-      if(first.dataset.symbol===b.dataset.symbol){
-        first.classList.add("matched");b.classList.add("matched");
-        first.disabled=true;b.disabled=true;
-        first=null;matches++;
-        if(matches===8)$("memoryResult").textContent="You won in "+moves+" moves!";
-        else $("memoryResult").textContent="Moves: "+moves;
+  deck.forEach((symbol,index)=>{
+    const button=document.createElement("button");
+    button.className="memory-cell";
+    button.textContent="?";
+    button.dataset.symbol=symbol;
+    button.onclick=()=>{
+      if(lock||button.classList.contains("matched")||button===first)return;
+      button.textContent=symbol;
+      if(!first){first=button;return;}
+      if(first.dataset.symbol===symbol){
+        first.classList.add("matched");
+        button.classList.add("matched");
+        first=null;
+        matches++;
+        $("memoryResult").textContent=matches===8?"You matched every pair!":" "+matches+" / 8 pairs";
       }else{
         lock=true;
         const previous=first;
         first=null;
-        setTimeout(()=>{previous.textContent="?";b.textContent="?";lock=false},700);
-        $("memoryResult").textContent="Moves: "+moves;
+        setTimeout(()=>{
+          previous.textContent="?";
+          button.textContent="?";
+          lock=false;
+        },650);
       }
     };
-    grid.appendChild(b);
+    grid.appendChild(button);
   });
-  $("memoryReset").onclick=()=>gameMemory(area);
 }
 function gameMath(area){
-  let a,b,answer,score=0,round=0;
+  let score=0,question=0,a,b;
   area.innerHTML=`
     <h2>Math Sprint</h2>
     <p id="mathQuestion"></p>
     <input id="mathAnswer" type="number" placeholder="Answer">
-    <div class="game-actions"><button class="primary" id="mathSubmit">Submit</button></div>
+    <button class="primary" id="mathSubmit">Submit</button>
     <div class="game-result" id="mathResult">Score: 0</div>`;
   function next(){
     a=Math.floor(Math.random()*12)+1;
     b=Math.floor(Math.random()*12)+1;
-    answer=a+b;
     $("mathQuestion").textContent=a+" + "+b+" = ?";
     $("mathAnswer").value="";
     $("mathAnswer").focus();
   }
   $("mathSubmit").onclick=()=>{
-    if(Number($("mathAnswer").value)===answer){
-      score++;$("mathResult").textContent="Correct! Score: "+score;
-    }else $("mathResult").textContent="Not quite. The answer was "+answer+". Score: "+score;
-    round++;
-    if(round<10)setTimeout(next,700);
-    else $("mathQuestion").textContent="Finished! Final score: "+score+"/10";
+    if(Number($("mathAnswer").value)===a+b)score++;
+    question++;
+    $("mathResult").textContent="Score: "+score+" / "+question;
+    next();
   };
   next();
 }
 function gameReaction(area){
-  let started=0,timer=null,ready=false;
+  let ready=false,started=0,timer=null;
   area.innerHTML=`
     <h2>Reaction Test</h2>
-    <p>Press start. Wait for the screen to turn green, then click as quickly as you can.</p>
-    <div id="reactionBox" style="padding:35px;border-radius:16px;background:#d9edf4;margin:15px 0;font-weight:bold">Press Start</div>
-    <button class="primary" id="reactionStart">Start</button>
+    <p>Press Start, wait for green, then click the box.</p>
+    <button id="reactionStart">Start</button>
+    <button id="reactionBox" disabled style="display:block;width:100%;height:100px;margin-top:12px">Wait...</button>
     <div class="game-result" id="reactionResult"></div>`;
   $("reactionStart").onclick=()=>{
-    clearTimeout(timer);ready=false;
-    $("reactionBox").style.background="#d9edf4";
-    $("reactionBox").textContent="Wait...";
+    clearTimeout(timer);
+    ready=false;
+    $("reactionBox").disabled=true;
+    $("reactionBox").textContent="Wait for green...";
     $("reactionResult").textContent="";
     timer=setTimeout(()=>{
       ready=true;started=performance.now();
-      $("reactionBox").style.background="#9ce9ba";
+      $("reactionBox").disabled=false;
       $("reactionBox").textContent="CLICK NOW!";
     },1000+Math.random()*3000);
   };
