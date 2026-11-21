@@ -1,571 +1,1657 @@
-
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Algorizmi Studio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
 
 <style>
 :root {
-  --text:#254d6c;
-  --muted:#7898b1;
-  --glass:rgba(255,255,255,.53);
-  --border:rgba(255,255,255,.88);
-  --shadow:0 12px 40px rgba(65,130,177,.16);
+  --ink:#16475e;
+  --muted:#7299a9;
+  --glass:rgba(255,255,255,.58);
+  --line:rgba(255,255,255,.85);
+  --blue:#078bbd;
+  --cyan:#66d8ed;
 }
 *{box-sizing:border-box}
 body{
-  margin:0;min-height:100vh;color:var(--text);
-  font-family:Inter,sans-serif;
+  margin:0;
+  min-height:100vh;
+  font-family:Segoe UI,Arial,sans-serif;
+  color:var(--ink);
   background:
-    radial-gradient(ellipse at 10% 5%,#fff,transparent 35%),
-    radial-gradient(ellipse at 90% 10%,#a5e5ff,transparent 40%),
-    linear-gradient(140deg,#c9e9ff,#e9faff 48%,#b5e5f6);
+    radial-gradient(circle at 15% 15%,#fff 0,transparent 24%),
+    radial-gradient(circle at 85% 20%,#a8edfa 0,transparent 30%),
+    radial-gradient(circle at 60% 90%,#9bdde9 0,transparent 35%),
+    linear-gradient(135deg,#b8eaf5,#effdff 48%,#b3e4ef);
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+body:before,body:after{
+  content:"";
+  position:fixed;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:-1;
+  filter:blur(2px);
+}
+body:before{
+  width:360px;height:360px;
+  top:15%;right:-100px;
+  background:radial-gradient(circle at 35% 30%,#ffffffa8,#65d5e844 55%,transparent 70%);
+}
+body:after{
+  width:280px;height:280px;
+  bottom:-70px;left:-70px;
+  background:radial-gradient(circle at 35% 30%,#ffffffb0,#43b8df44 55%,transparent 70%);
 }
 .bubble{
-  position:fixed;pointer-events:none;border-radius:50%;
-  background:linear-gradient(140deg,#ffffffa8,#73d9ff20);
-  box-shadow:inset 0 5px 20px #ffffffaa,0 15px 35px #60b9e322;
+  position:fixed;
+  width:16px;height:16px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#ffffffc9,#7bd9ed55);
+  border:1px solid #ffffffb0;
+  box-shadow:inset -3px -4px 8px #40a9c533,0 4px 15px #388da522;
   animation:float 12s ease-in-out infinite;
+  pointer-events:none;
+  z-index:-1;
 }
-.b1{width:130px;height:130px;right:5%;top:8%}
-.b2{width:60px;height:60px;left:3%;bottom:18%;animation-delay:-4s}
-.b3{width:24px;height:24px;right:8%;bottom:27%;animation-delay:-2s}
-@keyframes float{50%{transform:translateY(-18px)}}
-@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-
-.glass{
-  background:var(--glass);backdrop-filter:blur(24px) saturate(145%);
-  -webkit-backdrop-filter:blur(24px) saturate(145%);
-  border:1px solid var(--border);box-shadow:var(--shadow),inset 0 1px white;
-  border-radius:20px;
+.b1{left:8%;top:32%;width:24px;height:24px}
+.b2{left:88%;top:65%;width:35px;height:35px;animation-delay:-4s}
+.b3{left:70%;top:8%;width:13px;height:13px;animation-delay:-7s}
+.b4{left:40%;top:88%;width:20px;height:20px;animation-delay:-2s}
+@keyframes float{
+  0%,100%{transform:translateY(0) translateX(0)}
+  50%{transform:translateY(-35px) translateX(12px)}
 }
 button{
-  cursor:pointer;color:var(--text);font-family:inherit;
-  border:1px solid white;background:linear-gradient(#ffffffdd,#dff4ffcc);
-  box-shadow:0 3px 10px #6fa8ce22,inset 0 1px white;
-  transition:transform .15s,filter .15s;
+  border:1px solid #ffffffd9;
+  border-radius:12px;
+  padding:10px 15px;
+  background:linear-gradient(145deg,#fff,#c8edf6);
+  color:#17617d;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 4px 12px #397e9d25,inset 0 1px 2px white;
+  transition:transform .18s,filter .18s,box-shadow .18s;
 }
-button:hover{transform:translateY(-1px);filter:brightness(1.04)}
-button:active{transform:scale(.96)}
-.app{width:min(1600px,96%);margin:20px auto;animation:appear .4s}
-.topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;flex-wrap:wrap;padding:14px 18px;margin-bottom:14px;
+button:hover{
+  filter:brightness(1.04);
+  transform:translateY(-2px);
+  box-shadow:0 7px 18px #397e9d35,inset 0 1px 2px white;
+}
+button:active{transform:translateY(0) scale(.98)}
+button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.primary{
+  background:linear-gradient(135deg,#27c4e5,#087cae);
+  color:white;
+  border-color:#a9f0ff;
+  box-shadow:0 5px 16px #087cae44,inset 0 1px 2px #ffffff77;
+}
+.danger{
+  background:linear-gradient(135deg,#ffe5e9,#ffc9d1);
+  color:#a43e56;
+}
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  padding:18px 24px;
+  max-width:1600px;
+  margin:auto;
 }
 .brand{display:flex;align-items:center;gap:12px}
 .logo{
-  width:44px;height:44px;display:grid;place-items:center;
-  border-radius:15px;color:white;font-size:23px;font-weight:800;
-  background:linear-gradient(145deg,#7beaff,#3697f7);
-  box-shadow:0 5px 15px #51baff55,inset 0 2px 3px #ffffffaa;
+  width:45px;height:45px;
+  display:grid;place-items:center;
+  border-radius:15px;
+  color:#087ba8;
+  font-size:23px;
+  background:linear-gradient(145deg,#fff,#a8e9f5);
+  border:1px solid white;
+  box-shadow:0 5px 16px #318ba633,inset 0 2px 4px white;
 }
-.brand h1{font-size:18px;margin:0}
-.brand small{display:block;font-size:11px;color:var(--muted);margin-top:3px}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn{padding:9px 12px;border-radius:11px;font-size:12px;font-weight:600}
-.primary{color:white;background:linear-gradient(#72c9ff,#3796ed)}
-.green{background:linear-gradient(#a5f1ce,#59d4a0);color:#176448}
-.arrow{min-width:45px;font-size:18px;font-weight:800}
-
-.main{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:14px}
-.left,.right{display:flex;flex-direction:column;gap:14px;min-width:0}
-.panel{overflow:hidden}
-.panelhead{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  flex-wrap:wrap;padding:12px 15px;border-bottom:1px solid #ffffffa8;
-  font-size:12px;font-weight:700;
+.brand h1{font-size:23px;margin:0;letter-spacing:-.7px}
+.brand small{color:#6592a5}
+nav{display:flex;gap:7px;flex-wrap:wrap}
+.nav-btn{
+  background:#ffffff70;
+  border:1px solid #ffffff9c;
+  box-shadow:none;
 }
-.panelhead small{color:var(--muted);font-weight:500}
-.toolbar{display:flex;gap:6px;flex-wrap:wrap}
-.toolbar button{padding:6px 9px;border-radius:9px;font-size:11px}
-.editorwrap{height:65vh;min-height:450px;max-height:85vh;width:100%}
-#editor{height:100%;width:100%}
-#fallback{
-  height:100%;width:100%;resize:none;border:0;outline:0;padding:16px;
-  background:transparent;color:var(--text);font:13px/1.8 "JetBrains Mono",monospace;
+.nav-btn.active{
+  background:linear-gradient(135deg,#fff,#b8eefa);
+  color:#087ba8;
+  box-shadow:0 4px 12px #3b9bb533;
 }
-.status{
-  display:flex;justify-content:space-between;align-items:center;
-  flex-wrap:wrap;gap:10px;padding:8px 12px;
-  border-top:1px solid #ffffffaa;background:#ffffff30;
-  font-size:10px;color:var(--muted);
+main{max-width:1550px;margin:auto;padding:10px 24px 40px}
+.page{display:none;animation:appear .3s ease}
+.page.active{display:block}
+@keyframes appear{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
 }
-.consolepanel{overflow:hidden}
-.console{
-  height:320px;min-height:180px;max-height:75vh;resize:vertical;overflow:auto;
-  padding:15px;background:rgba(242,250,255,.55);
-  font:13px/1.8 "JetBrains Mono",monospace;
+.hero{
+  padding:38px;
+  border-radius:26px;
+  background:linear-gradient(135deg,#ffffffc9,#d5f5fa9c);
+  border:1px solid white;
+  box-shadow:0 15px 40px #397e9d20,inset 0 1px 2px white;
+  backdrop-filter:blur(18px);
+  overflow:hidden;
+  position:relative;
 }
-.log{white-space:pre-wrap;overflow-wrap:anywhere}
-.error{color:#dc5969}.success{color:#20966e}.input{color:#258bcd}
-.inputrow{display:none;gap:8px;padding:10px;border-top:1px solid white}
-.inputrow.active{display:flex}
-.inputrow input{
-  flex:1;min-width:0;padding:10px;border-radius:11px;
-  border:1px solid white;background:#ffffffb8;outline:none;
-  color:var(--text);font:13px "JetBrains Mono",monospace;
+.hero h2{font-size:clamp(30px,5vw,54px);margin:0 0 12px;letter-spacing:-2px}
+.hero p{font-size:16px;line-height:1.7;color:#527e91;max-width:650px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.panel{
+  background:var(--glass);
+  border:1px solid var(--line);
+  border-radius:19px;
+  overflow:hidden;
+  box-shadow:0 12px 32px #397e9d1c,inset 0 1px 2px white;
+  backdrop-filter:blur(16px);
 }
-.inputrow button{border-radius:11px;padding:0 14px}
-.sidecard{padding:15px}
-.sidecard h3{font-size:12px;margin:0 0 12px}
-.sidecard p{font-size:11px;line-height:1.7;color:var(--muted);margin:0}
-.example{
-  margin-top:8px;padding:10px;border-radius:12px;
-  border:1px solid #ffffff90;background:#ffffff50;cursor:pointer;transition:.2s;
-  font-size:11px;
+.panel-heading{
+  padding:13px 16px;
+  background:#ffffff70;
+  border-bottom:1px solid #b5dce877;
+  font-weight:700;
+  font-size:13px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
 }
-.example:hover{transform:translateY(-2px);background:#ffffffa0}
-.example strong{display:block;margin-bottom:4px}
-.example span{color:var(--muted)}
-.tip{display:flex;gap:9px;padding:9px;margin-top:8px;border-radius:11px;background:#ffffff55;font-size:11px;line-height:1.6}
-.tip b{color:#3489c8}
-.footer{text-align:center;padding:15px;font-size:10px;color:#7595ad}
-@media(max-width:900px){.main{grid-template-columns:1fr}.right{display:grid;grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.right{grid-template-columns:1fr}.editorwrap{height:55vh;min-height:360px}}
+.layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.7fr) minmax(260px,.8fr);
+  gap:16px;
+}
+.editor-panel{min-width:0}
+.editor-toolbar{
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+}
+#editor{height:590px;width:100%;background:#f5fcff}
+.editor-fallback{
+  display:none;
+  width:100%;height:590px;
+  border:0;outline:none;resize:vertical;
+  padding:18px;
+  font:14px/1.7 Consolas,monospace;
+  color:#174a62;background:#f5fcff;
+  tab-size:2;
+}
+.editor-status{
+  display:flex;justify-content:space-between;gap:10px;
+  padding:8px 13px;
+  color:#7295a5;font-size:11px;
+  background:#ffffff80;border-top:1px solid #b5dce877;
+}
+.side{display:flex;flex-direction:column;gap:15px;min-width:0}
+#output{
+  height:235px;overflow:auto;padding:14px;
+  font:13px/1.8 Consolas,monospace;
+  white-space:pre-wrap;overflow-wrap:anywhere;
+  background:#f6fdff;color:#28576c;
+}
+.output-line{min-height:20px}
+.error{color:#bd4355}
+.success{color:#16835e}
+.input-row{
+  display:none;
+  padding:10px;
+  gap:7px;
+  background:#e9f8fc;
+  border-top:1px solid #c3e5ed;
+}
+.input-row.show{display:flex}
+.input-row input{
+  min-width:0;flex:1;
+  border:1px solid #b7dce8;
+  border-radius:9px;padding:9px;
+  outline:none;color:#16475e;background:white;
+}
+.input-row input:focus{border-color:#35b8dc;box-shadow:0 0 0 3px #35b8dc22}
+.console-tools{display:flex;gap:6px}
+.console-tools button{padding:6px 9px;font-size:11px}
+.examples,.reference{padding:15px;font-size:12px;line-height:1.8}
+.examples button{font-size:11px;padding:7px 10px;margin:3px}
+code{
+  background:#e1f5fa;padding:2px 5px;border-radius:4px;
+  font-family:Consolas,monospace;
+}
+.section-title{margin:24px 0 12px;font-size:21px}
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
+.game-card{
+  padding:18px;
+  transition:transform .2s,box-shadow .2s;
+}
+.game-card:hover{transform:translateY(-4px);box-shadow:0 16px 30px #397e9d2c}
+.game-icon{font-size:30px;margin-bottom:10px}
+.game-card h3{margin:4px 0 7px}
+.game-card p{font-size:13px;color:#62889a;line-height:1.5;min-height:40px}
+.game-area{
+  padding:20px;
+  text-align:center;
+  min-height:240px;
+}
+.game-area h2{margin-top:0}
+.game-area input{
+  border:1px solid #b9dce8;border-radius:10px;
+  padding:11px;font-size:16px;width:130px;
+}
+.game-result{font-weight:700;min-height:28px;margin:12px}
+.game-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.memory-grid{
+  display:grid;grid-template-columns:repeat(4,65px);
+  justify-content:center;gap:8px;margin:18px auto;
+}
+.memory-cell{
+  width:65px;height:65px;font-size:24px;padding:0;
+  background:linear-gradient(145deg,#fff,#bfeefa);
+}
+.guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.guide-card{padding:18px}
+.guide-card h3{margin-top:0}
+.guide-card p{font-size:13px;line-height:1.7;color:#557f91}
+footer{text-align:center;color:#7295a5;font-size:11px;margin-top:30px;padding:12px}
+.hidden{display:none!important}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  #editor{height:480px}
+  .editor-fallback{height:480px}
+}
+@media(max-width:600px){
+  header{align-items:flex-start;flex-direction:column;padding:15px}
+  main{padding:8px 12px 30px}
+  .hero{padding:24px}
+  .hero h2{letter-spacing:-1px}
+  .memory-grid{grid-template-columns:repeat(4,55px)}
+  .memory-cell{width:55px;height:55px}
+}
 </style>
 </head>
 
 <body>
-<div class="bubble b1"></div><div class="bubble b2"></div><div class="bubble b3"></div>
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
 
-<div class="app">
-<header class="topbar glass">
+<header>
   <div class="brand">
-    <div class="logo">A</div>
-    <div><h1>Algorizmi Studio</h1><small>Algorithmic programming environment</small></div>
-  </div>
-  <div class="actions">
-    <button class="btn arrow" id="copyArrow" title="Copy arrow">←</button>
-    <button class="btn" id="clearBtn">Clear editor</button>
-    <button class="btn primary" id="runBtn">▶ Run</button>
-  </div>
-</header>
-
-<div class="main">
-<div class="left">
-
-<section class="panel glass">
-  <div class="panelhead">
-    <span>Editor <small>main.algo</small></span>
-    <div class="toolbar">
-      <button id="insertArrow">← Arrow</button>
-      <button id="insertWrite">Ecrire</button>
-      <button id="insertRead">Lire</button>
+    <div class="logo">◈</div>
+    <div>
+      <h1>Algorizmi Studio</h1>
+      <small>Programming, reimagined.</small>
     </div>
   </div>
-  <div class="editorwrap"><div id="editor"><textarea id="fallback" spellcheck="false"></textarea></div></div>
-  <div class="status">
-    <span id="editorStatus">Algorizmi · Ready</span>
-    <span id="cursorStatus">Ln 1, Col 1</span>
-    <span id="lineCount">1 lines</span>
+  <nav>
+    <button class="nav-btn active" data-page="home">Home</button>
+    <button class="nav-btn" data-page="studio">Studio</button>
+    <button class="nav-btn" data-page="arcade">Game Arcade</button>
+    <button class="nav-btn" data-page="guide">Language Guide</button>
+  </nav>
+</header>
+
+<main>
+<section class="page active" id="home">
+  <div class="hero">
+    <h2>Code in your language.</h2>
+    <p>
+      Welcome to Algorizmi Studio — an educational programming environment
+      built around the algorithmic notation used in Tunisian classrooms.
+      Write algorithms, experiment with logic, and learn by building.
+    </p>
+    <div class="hero-actions">
+      <button class="primary" onclick="showPage('studio')">Open Studio →</button>
+      <button onclick="showPage('arcade')">Explore the Arcade</button>
+      <button onclick="showPage('guide')">Learn the language</button>
+    </div>
+  </div>
+
+  <h2 class="section-title">Your programming workspace</h2>
+  <div class="cards">
+    <div class="panel guide-card">
+      <div class="game-icon">⌨️</div>
+      <h3>Code editor</h3>
+      <p>Write algorithms with syntax highlighting, autocomplete and a familiar IDE layout.</p>
+    </div>
+    <div class="panel guide-card">
+      <div class="game-icon">▶</div>
+      <h3>Interpreter</h3>
+      <p>Execute supported Algorizmi instructions and inspect the output in the console.</p>
+    </div>
+    <div class="panel guide-card">
+      <div class="game-icon">🎮</div>
+      <h3>Game arcade</h3>
+      <p>Play small games and explore the algorithmic ideas behind them.</p>
+    </div>
   </div>
 </section>
 
-<section class="panel glass consolepanel">
-  <div class="panelhead"><span>◈ Output console</span><button class="btn" id="consoleClear">Clear console</button></div>
-  <div id="console" class="console"></div>
-  <div class="inputrow" id="inputrow"><input id="consoleInput" placeholder="Enter value..." autocomplete="off"><button id="submitInput">Enter ↵</button></div>
-</section>
-</div>
+<section class="page" id="studio">
+  <div class="layout">
+    <section class="panel editor-panel">
+      <div class="panel-heading">
+        <span>◈ main.algo</span>
+        <div class="editor-toolbar">
+          <button onclick="insertArrow()" title="Insert assignment arrow">←</button>
+          <button onclick="formatCode()">Format</button>
+          <button onclick="openFile()">Open</button>
+          <button onclick="saveFile()">Save</button>
+          <button class="primary" onclick="runProgram()">▶ Run</button>
+          <button class="danger" onclick="stopProgram()">■ Stop</button>
+        </div>
+      </div>
+      <div id="editor"></div>
+      <textarea id="fallback" class="editor-fallback" spellcheck="false"></textarea>
+      <div class="editor-status">
+        <span id="status">● Loading editor...</span>
+        <span id="cursor">Ln 1, Col 1</span>
+        <span id="counts">0 lines · 0 chars</span>
+      </div>
+    </section>
 
-<div class="right">
-<section class="glass sidecard">
-<h3>Quick start</h3><p>Click an example to load it.</p>
-<div class="example" data-example="hello"><strong>01 · Hello world</strong><span>Basic output</span></div>
-<div class="example" data-example="variables"><strong>02 · Variables</strong><span>Declarations and assignment</span></div>
-<div class="example" data-example="input"><strong>03 · User input</strong><span>Lire and console input</span></div>
-<div class="example" data-example="condition"><strong>04 · Conditions</strong><span>Si / Sinon</span></div>
-<div class="example" data-example="loop"><strong>05 · Loop</strong><span>Pour / Pas</span></div>
-<div class="example" data-example="while"><strong>06 · While</strong><span>TantQue</span></div>
+    <aside class="side">
+      <section class="panel">
+        <div class="panel-heading">
+          <span>◈ Output console</span>
+          <div class="console-tools">
+            <button onclick="clearOutput()">Clear</button>
+          </div>
+        </div>
+        <div id="output">Welcome to Algorizmi Studio.
+Press Run to execute your algorithm.</div>
+        <div class="input-row" id="inputRow">
+          <input id="consoleInput" placeholder="Enter a value..." autocomplete="off">
+          <button class="primary" onclick="submitInput()">Send</button>
+        </div>
+      </section>
+
+      <section class="panel examples">
+        <b>EXAMPLES</b><br>
+        <button onclick="loadExample('calc')">Calculator</button>
+        <button onclick="loadExample('hello')">Hello</button>
+        <button onclick="loadExample('loop')">Loops</button>
+        <button onclick="loadExample('condition')">Conditions</button>
+        <button onclick="loadExample('repeat')">Repeat</button>
+        <button onclick="loadExample('input')">Input</button>
+        <button onclick="loadExample('table')">Multiplication table</button>
+      </section>
+
+      <section class="panel reference">
+        <b>LANGUAGE REFERENCE</b><br>
+        Types: <code>entier</code> <code>réel</code> <code>chaine</code> <code>booléen</code><br>
+        Output: <code>Ecrire("Hello", x)</code><br>
+        Input: <code>Lire(x)</code><br>
+        Conditions: <code>Si / Alors / Sinon / FinSi</code><br>
+        Loops: <code>Pour / FinPour</code>, <code>TantQue / FinTantQue</code><br>
+        Repeat: <code>Répéter / Jusqu'à</code><br>
+        Operators: <code>et</code> <code>ou</code> <code>non</code> <code>div</code> <code>mod</code><br>
+        <small>Ctrl+Space: autocomplete · Ctrl+Enter: run</small>
+      </section>
+    </aside>
+  </div>
 </section>
 
-<section class="glass sidecard">
-<h3>Editor shortcuts</h3>
-<div class="tip"><b>←</b><span>Copy assignment arrow</span></div>
-<div class="tip"><b>Tab</b><span>Autocomplete snippets</span></div>
-<div class="tip"><b>Ctrl + Enter</b><span>Run program</span></div>
-<div class="tip"><b>Enter</b><span>Submit console input</span></div>
+<section class="page" id="arcade">
+  <div class="hero">
+    <h2>Algorizmi Arcade</h2>
+    <p>Play, experiment and explore programming concepts through small games.</p>
+  </div>
+  <h2 class="section-title">Choose a game</h2>
+  <div class="cards" id="gameCards">
+    <div class="panel game-card">
+      <div class="game-icon">🔢</div>
+      <h3>Number Guess</h3>
+      <p>Find the secret number using comparisons and conditions.</p>
+      <button onclick="startGame('guess')">Play</button>
+    </div>
+    <div class="panel game-card">
+      <div class="game-icon">✂️</div>
+      <h3>Rock Paper Scissors</h3>
+      <p>Use random choices and conditional logic.</p>
+      <button onclick="startGame('rps')">Play</button>
+    </div>
+    <div class="panel game-card">
+      <div class="game-icon">🧠</div>
+      <h3>Memory Match</h3>
+      <p>Remember positions and match identical symbols.</p>
+      <button onclick="startGame('memory')">Play</button>
+    </div>
+    <div class="panel game-card">
+      <div class="game-icon">➗</div>
+      <h3>Math Sprint</h3>
+      <p>Practice quick arithmetic and variables.</p>
+      <button onclick="startGame('math')">Play</button>
+    </div>
+    <div class="panel game-card">
+      <div class="game-icon">⚡</div>
+      <h3>Reaction Test</h3>
+      <p>Wait for the signal and test your reaction time.</p>
+      <button onclick="startGame('reaction')">Play</button>
+    </div>
+    <div class="panel game-card">
+      <div class="game-icon">⬆️</div>
+      <h3>Higher or Lower</h3>
+      <p>Guess whether the next number will be higher or lower.</p>
+      <button onclick="startGame('higher')">Play</button>
+    </div>
+  </div>
+
+  <div id="gameScreen" class="hidden">
+    <h2 class="section-title" id="gameTitle">Game</h2>
+    <section class="panel game-area" id="gameArea"></section>
+    <div class="panel" style="padding:16px;margin-top:15px">
+      <b>Algorithm example</b>
+      <p style="font-size:12px;color:#62889a">An illustrative Algorizmi pseudocode example for the game. The arcade interface itself is implemented in JavaScript.</p>
+      <pre id="gameCode" style="white-space:pre-wrap;font:12px/1.7 Consolas;color:#24566c"></pre>
+      <button onclick="copyGameCode()">Copy algorithm</button>
+      <button onclick="openGameCode()">Open in Studio</button>
+    </div>
+    <p><button onclick="closeGame()">← Back to arcade</button></p>
+  </div>
 </section>
 
-<section class="glass sidecard">
-<h3>About</h3><p>Algorizmi is an algorithmic programming environment designed for learning and experimenting with pseudocode.</p>
+<section class="page" id="guide">
+  <div class="hero">
+    <h2>Language Guide</h2>
+    <p>A quick reference for the algorithmic notation used in this environment.</p>
+  </div>
+  <h2 class="section-title">Core structure</h2>
+  <div class="guide-grid">
+    <div class="panel guide-card">
+      <h3>Program structure</h3>
+      <pre>Algorithme Bonjour
+Début
+  Ecrire("Bonjour")
+Fin</pre>
+    </div>
+    <div class="panel guide-card">
+      <h3>Variables</h3>
+      <pre>Variables
+age : entier
+nom : chaine</pre>
+    </div>
+    <div class="panel guide-card">
+      <h3>Input and output</h3>
+      <pre>Lire(age)
+Ecrire("Age : ", age)</pre>
+    </div>
+    <div class="panel guide-card">
+      <h3>Condition</h3>
+      <pre>Si age >= 18 Alors
+  Ecrire("Majeur")
+Sinon
+  Ecrire("Mineur")
+FinSi</pre>
+    </div>
+    <div class="panel guide-card">
+      <h3>For loop</h3>
+      <pre>Pour i de 1 à 5 Faire
+  Ecrire(i)
+FinPour</pre>
+    </div>
+    <div class="panel guide-card">
+      <h3>While loop</h3>
+      <pre>TantQue i <= 5 Faire
+  Ecrire(i)
+  i ← i + 1
+FinTantQue</pre>
+    </div>
+    <div class="panel guide-card">
+      <h3>Repeat loop</h3>
+      <pre>Répéter
+  Lire(n)
+Jusqu'à n > 0</pre>
+    </div>
+    <div class="panel guide-card">
+      <h3>Operators</h3>
+      <pre>+
+-
+*
+/
+div
+mod
+et
+ou
+non</pre>
+    </div>
+  </div>
 </section>
-</div>
-</div>
-<div class="footer">Algorizmi Studio · Built for learning</div>
-</div>
+
+<footer>ALGORIZMI STUDIO · AERO EDITION · EDUCATIONAL WEB IDE</footer>
+</main>
 
 <script>
-const $=id=>document.getElementById(id);
-const examples={
-hello:`Algorithme Bonjour
+"use strict";
+
+const $ = id => document.getElementById(id);
+const norm = s => String(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+
+const examples = {
+calc:`Algorithme Calculatrice
+Variables
+a, b, resultat : réel
 Début
-    Ecrire("Bonjour le monde !")
+  a ← 20
+  b ← 5
+  resultat ← a / b
+  Ecrire("Résultat : ", resultat)
 Fin`,
-variables:`Algorithme Calcul
-Début
-    a ← 20
-    b ← 5
-    resultat ← a / b
-    Ecrire("Résultat : ", resultat)
-Fin
 
-TDO
-a, b, resultat : réel`,
-input:`Algorithme InputTest
+hello:`Algorithme Bonjour
+Variables
+nom : chaine
 Début
-    Ecrire("Quel est ton nom ? ")
-    Lire(nom)
-    Ecrire("Bonjour ", nom)
-Fin
+  nom ← "Algorizmi"
+  Ecrire("Bienvenue sur ", nom, " !")
+Fin`,
 
-TDO
-nom : chaîne`,
-condition:`Algorithme Condition
-Début
-    age ← 16
-    Si age >= 18 Alors
-        Ecrire("Majeur")
-    Sinon
-        Ecrire("Mineur")
-    FinSi
-Fin
-
-TDO
-age : entier`,
 loop:`Algorithme Boucle
+Variables
+i : entier
 Début
-    Pour i de 1 à 5 Faire
-        Ecrire(i)
-    FinPour
-Fin
+  Pour i de 1 à 5 Faire
+    Ecrire("Tour numéro ", i)
+  FinPour
+Fin`,
 
-TDO
-i : entier`,
-while:`Algorithme TantQue
+condition:`Algorithme Conditions
+Variables
+note : réel
 Début
-    i ← 1
-    TantQue i <= 5 Faire
-        Ecrire(i)
-        i ← i + 1
-    FinTantQue
-Fin
+  note ← 15
+  Si note >= 10 Alors
+    Ecrire("Admis !")
+  Sinon
+    Ecrire("Non admis")
+  FinSi
+Fin`,
 
-TDO
-i : entier`
+repeat:`Algorithme Repeter
+Variables
+i : entier
+Début
+  i ← 1
+  Répéter
+    Ecrire("Valeur : ", i)
+    i ← i + 1
+  Jusqu'à i > 3
+Fin`,
+
+input:`Algorithme Saisie
+Variables
+nom : chaine
+age : entier
+Début
+  Ecrire("Quel est ton nom ?")
+  Lire(nom)
+  Ecrire("Quel âge as-tu ?")
+  Lire(age)
+  Ecrire("Bonjour ", nom)
+  Ecrire("Tu as ", age, " ans.")
+Fin`,
+
+table:`Algorithme Table
+Variables
+i, n : entier
+Début
+  n ← 7
+  Pour i de 1 à 10 Faire
+    Ecrire(n, " x ", i, " = ", n * i)
+  FinPour
+Fin`
 };
 
-let editor=null,running=false,inputResolver=null;
-const consoleBox=$("console");
+let editor = null;
+let monacoReady = false;
+let timer = null;
+let running = false;
+let waitingInput = null;
+let currentProgram = null;
+let gameSource = "";
 
-function normalize(s){
- return String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+function getCode(){
+  return editor ? editor.getValue() : $("fallback").value;
 }
-function code(){return editor?editor.getValue():$("fallback").value}
-function setCode(s){if(editor)editor.setValue(s);else $("fallback").value=s;status()}
-function status(){
- const text=code();
- $("lineCount").textContent=text.split(/\r?\n/).length+" lines";
- if(editor){
-  const p=editor.getPosition();
-  $("cursorStatus").textContent=`Ln ${p.lineNumber}, Col ${p.column}`;
- }else{
-  const t=$("fallback"),before=t.value.slice(0,t.selectionStart);
-  const ln=before.split("\n");
-  $("cursorStatus").textContent=`Ln ${ln.length}, Col ${ln.at(-1).length+1}`;
- }
+function setCode(value){
+  if(editor) editor.setValue(value);
+  else $("fallback").value = value;
+  updateCounts();
 }
-function insert(text){
- if(editor){
-  const p=editor.getPosition();
-  editor.executeEdits("insert",[{range:new monaco.Range(p.lineNumber,p.column,p.lineNumber,p.column),text,forceMoveMarkers:true}]);
-  editor.focus();
- }else{
-  const t=$("fallback");t.setRangeText(text,t.selectionStart,t.selectionEnd,"end");t.focus();
- }
- status();
+function output(text,kind=""){
+  const d=document.createElement("div");
+  d.className="output-line "+kind;
+  d.textContent=String(text);
+  $("output").appendChild(d);
+  $("output").scrollTop=$("output").scrollHeight;
 }
-function log(s,type="info"){
-  const d=document.createElement("div");d.className="log "+type;d.textContent=String(s);
-  consoleBox.appendChild(d);consoleBox.scrollTop=consoleBox.scrollHeight;
+function clearOutput(){
+  $("output").textContent="";
 }
-function clearConsole(){consoleBox.innerHTML=""}
-
-$("copyArrow").onclick=async()=>{
- try{await navigator.clipboard.writeText("←");$("editorStatus").textContent="← copied";
- setTimeout(()=>$("editorStatus").textContent="Algorizmi · Ready",1400)}
- catch{insert("←")}
-};
-$("insertArrow").onclick=()=>insert("←");
-$("insertWrite").onclick=()=>insert('Ecrire("")');
-$("insertRead").onclick=()=>insert("Lire()");
-$("clearBtn").onclick=()=>setCode("");
-$("consoleClear").onclick=clearConsole;
-$("runBtn").onclick=run;
-$("fallback").addEventListener("input",status);
-document.addEventListener("keydown",e=>{if(e.ctrlKey&&e.key==="Enter"){e.preventDefault();run()}});
-
-document.querySelectorAll(".example").forEach(x=>x.onclick=()=>{
- setCode(examples[x.dataset.example]);clearConsole();log("Example loaded.","success");
+function status(s){
+  $("status").textContent="● "+s;
+}
+function updateCounts(){
+  const value=getCode();
+  const lines=value.split(/\r?\n/).length;
+  $("counts").textContent=lines+" lines · "+value.length+" chars";
+}
+function showPage(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+  $(page).classList.add("active");
+}
+document.querySelectorAll(".nav-btn").forEach(b=>{
+  b.addEventListener("click",()=>showPage(b.dataset.page));
 });
 
-// Monaco
-(function(){
- const script=document.createElement("script");
- script.src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js";
- script.onload=()=>{
-  require.config({paths:{vs:"https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs"}});
-  require(["vs/editor/editor.main"],()=>{
-   monaco.languages.register({id:"algorizmi"});
-   monaco.languages.setMonarchTokensProvider("algorizmi",{tokenizer:{root:[
-    [/\b(Algorithme|Début|Fin|TDO|Variables|Ecrire|Ecrire_nl|Lire|Si|Alors|Sinon|FinSi|Pour|de|à|Faire|FinPour|TantQue|FinTantQue|Répéter|Jusqu'à)\b/i,"keyword"],
-    [/\b(entier|réel|reel|chaine|chaîne|booléen|booleen)\b/i,"type"],
-    [/"([^"\\]|\\.)*"/,"string"],
-    [/'([^'\\]|\\.)*'/,"string"],
-    [/\b\d+(\.\d+)?\b/,"number"],
-    [/\/\/.*$/,"comment"]
-   ]}});
-   monaco.editor.defineTheme("glass",{base:"vs",inherit:true,rules:[
-    {token:"keyword",foreground:"3186D8",fontStyle:"bold"},
-    {token:"string",foreground:"199E79"},
-    {token:"number",foreground:"D58A38"},
-    {token:"type",foreground:"8958BD"},
-    {token:"comment",foreground:"91A9BB",fontStyle:"italic"}
-   ],colors:{
-    "editor.background":"FFFFFF00","editor.foreground":"254C6C",
-    "editorLineNumber.foreground":"9AB8CE","editorLineNumber.activeForeground":"3C91CF",
-    "editorCursor.foreground":"3799ED","editor.selectionBackground":"9EDCFF77",
-    "editor.lineHighlightBackground":"FFFFFF30"
-   }});
-
-   const host=$("editor");
-   editor=monaco.editor.create(host,{value:$("fallback").value||examples.hello,
-    language:"algorizmi",theme:"glass",automaticLayout:true,fontFamily:"JetBrains Mono,monospace",
-    fontSize:13,lineHeight:23,minimap:{enabled:false},scrollBeyondLastLine:false,
-    padding:{top:16,bottom:16},wordWrap:"on",quickSuggestions:true,
-    tabSize:4,insertSpaces:true});
-   $("fallback").style.display="none";
-   editor.onDidChangeCursorPosition(status);
-   editor.onDidChangeModelContent(status);
-
-   const snippets=[
-    ["Ecrire",'Ecrire("${1}")'],
-    ["Lire",'Lire(${1})'],
-    ["Si",'Si ${1:condition} Alors\n    ${2}\nFinSi'],
-    ["Si / Sinon",'Si ${1:condition} Alors\n    ${2}\nSinon\n    ${3}\nFinSi'],
-    ["Pour",'Pour ${1:i} de ${2:1} à ${3:10} Faire\n    ${4}\nFinPour'],
-    ["TantQue",'TantQue ${1:condition} Faire\n    ${2}\nFinTantQue'],
-    ["Répéter",'Répéter\n    ${1}\nJusqu’à ${2:condition}'],
-    ["Algorithme",'Algorithme ${1:Nom}\nDébut\n    ${2}\nFin'],
-    ["TDO",'TDO\n${1:variable} : ${2:entier}']
-   ];
-   monaco.languages.registerCompletionItemProvider("algorizmi",{provideCompletionItems(model,pos){
-    const word=model.getWordUntilPosition(pos);
-    const range={startLineNumber:pos.lineNumber,endLineNumber:pos.lineNumber,startColumn:word.startColumn,endColumn:word.endColumn};
-    return{suggestions:snippets.map(([label,text])=>({label,insertText:text,insertTextRules:monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,kind:monaco.languages.CompletionItemKind.Snippet,range}))};
-   }});
-   editor.onKeyDown(e=>{
-    if(e.keyCode!==monaco.KeyCode.Tab)return;
-    const p=editor.getPosition(),w=editor.getModel().getWordUntilPosition(p),k=normalize(w.word);
-    const map={ecrire:'Ecrire("${1}")',lire:'Lire(${1})',si:'Si ${1:condition} Alors\n    ${2}\nFinSi',pour:'Pour ${1:i} de ${2:1} à ${3:10} Faire\n    ${4}\nFinPour',tantque:'TantQue ${1:condition} Faire\n    ${2}\nFinTantQue',repeter:'Répéter\n    ${1}\nJusqu’à ${2:condition}'};
-    if(!map[k])return;
-    e.preventDefault();
-    editor.executeEdits("snippet",[{range:new monaco.Range(p.lineNumber,w.startColumn,p.lineNumber,p.column),text:map[k]}]);
-   });
-   status();
-  });
- };
- script.onerror=()=>log("Monaco failed to load. Internet connection required.","error");
- document.head.appendChild(script);
-})();
-
-// Expression parser
-function tokens(src){
- const re=/\s+|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\d+(?:\.\d+)?|<=|>=|<>|!=|==|[()+\-*/%,<>=]|[A-Za-zÀ-ÿ_][A-Za-zÀ-ÿ_\d]*/gy;
- let a=[],i=0;
- while(i<src.length){
-  re.lastIndex=i;const m=re.exec(src);
-  if(!m)throw Error("Expression invalide près de : "+src.slice(i));
-  i=re.lastIndex;if(!m[0].trim())continue;a.push(m[0]);
- }
- return a;
+function loadExample(key){
+  stopProgram();
+  setCode(examples[key]);
+  clearOutput();
+  output("Loaded example: "+key,"success");
+  analyze();
 }
-function evaluate(src,env){
- const a=tokens(src);let i=0;
- const peek=()=>a[i],take=()=>a[i++],is=x=>normalize(peek()||"")===normalize(x);
- function need(x){if(!is(x))throw Error("Expected "+x);take()}
- function primary(){
-  let x=peek();if(x===undefined)throw Error("Expression incomplète");
-  if(x==="("){take();let v=or();need(")");return v}
-  if(/^".*"$|^'.*'$/.test(x)){take();return x.slice(1,-1)}
-  if(/^\d/.test(x)){take();return Number(x)}
-  if(is("vrai")){take();return true}
-  if(is("faux")){take();return false}
-  if(is("non")){take();return !primary()}
-  if(/^[A-Za-zÀ-ÿ_]\w*$/.test(x)){
-   take();
-   if(peek()==="("){take();let args=[];if(peek()!==")"){args.push(or());while(peek()===","){take();args.push(or())}}need(")");return fn(x,args)}
-   if(env.has(normalize(x)))return env.get(normalize(x));
-   throw Error("Variable non déclarée : "+x);
+function resetCode(){loadExample("calc")}
+function insertArrow(){
+  if(editor){
+    editor.trigger("keyboard","type",{text:"←"});
+    editor.focus();
+  }else{
+    const f=$("fallback");
+    const a=f.selectionStart,b=f.selectionEnd;
+    f.setRangeText("←",a,b,"end");
+    f.focus();updateCounts();
   }
-  throw Error("Expression invalide : "+x);
- }
- function unary(){if(is("-")){take();return -unary()}if(is("+")){take();return unary()}return primary()}
- function mul(){let v=unary();while(is("*")||is("/")||is("div")||is("mod")||is("%")){let op=normalize(take()),b=unary();if(op==="*")v*=b;else if(op==="/"){if(!b)throw Error("Division par zéro");v/=b}else if(op==="div"){if(!b)throw Error("Division par zéro");v=Math.trunc(v/b)}else v%=b}return v}
- function add(){let v=mul();while(is("+")||is("-")){let op=take(),b=mul();v=op==="+"?(typeof v==="string"||typeof b==="string"?String(v)+String(b):v+b):v-b}return v}
- function cmp(){let v=add();while(["=","==","<>","!=","<",">","<=",">="].some(is)){let op=take(),b=add();if(op==="="||op==="==")v=v==b;else if(op==="!="||op==="<>")v=v!=b;else if(op==="<")v=v<b;else if(op===">")v=v>b;else if(op==="<=")v=v<=b;else v=v>=b}return v}
- function and(){let v=cmp();while(is("et")){take();let b=cmp();v=Boolean(v&&b)}return v}
- function or(){let v=and();while(is("ou")){take();let b=and();v=Boolean(v||b)}return v}
- let result=or();if(i<a.length)throw Error("Expression invalide près de "+a[i]);return result;
 }
-function fn(name,args){
- const x=args[0],n=normalize(name);
- switch(n){
-  case"long":return String(x??"").length;
-  case"ent":return Math.trunc(Number(x));
-  case"abs":return Math.abs(Number(x));
-  case"racine":case"sqrt":return Math.sqrt(Number(x));
-  case"convch":return String(x);
-  case"valeur":return Number(x);
-  case"majus":return String(x).toUpperCase();
-  case"minusc":return String(x).toLowerCase();
-  case"arrondi":return Math.round(Number(x));
-  case"alea":return Math.random();
-  default:throw Error("Fonction inconnue : "+name);
- }
+function formatCode(){
+  let depth=0;
+  const result=getCode().split("\n").map(line=>{
+    const s=line.trim();
+    if(!s)return "";
+    if(/^(FinSi|FinPour|FinTantQue|Jusqu'à|Jusqu.a)/i.test(s))depth=Math.max(0,depth-1);
+    const out="  ".repeat(depth)+s;
+    if(/^(Si .* Alors|Pour .* Faire|TantQue .* Faire|Répéter)/i.test(s))depth++;
+    return out;
+  });
+  setCode(result.join("\n"));
+}
+function openFile(){
+  const input=document.createElement("input");
+  input.type="file";
+  input.accept=".algo,.txt";
+  input.onchange=()=>{
+    const file=input.files[0];
+    if(!file)return;
+    const reader=new FileReader();
+    reader.onload=()=>setCode(String(reader.result));
+    reader.readAsText(file);
+  };
+  input.click();
+}
+function saveFile(){
+  const blob=new Blob([getCode()],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download="main.algo";a.click();
+  URL.revokeObjectURL(url);
 }
 function splitArgs(s){
- let out=[],start=0,d=0,q=null;
- for(let i=0;i<s.length;i++){let c=s[i];
-  if(q){if(c==="\\")i++;else if(c===q)q=null}
-  else if(c==='""'||c==="'" )q=c;
-  else if(c==="(")d++;
-  else if(c===")")d--;
-  else if(c===","&&d===0){out.push(s.slice(start,i).trim());start=i+1}
- }
- if(s.trim())out.push(s.slice(start).trim());return out;
+  let result=[],start=0,q=null,depth=0;
+  for(let i=0;i<s.length;i++){
+    const c=s[i];
+    if(q){
+      if(c===q&&s[i-1]!=="\\")q=null;
+      continue;
+    }
+    if(c==='"'||c==="'"){q=c;continue}
+    if(c==="(")depth++;
+    if(c===")")depth--;
+    if(c===","&&depth===0){
+      result.push(s.slice(start,i).trim());
+      start=i+1;
+    }
+  }
+  result.push(s.slice(start).trim());
+  return result.filter(Boolean);
 }
-function getTypes(lines){
- let map=new Map(),active=false;
- for(const line of lines){
-  const n=normalize(line);
-  if(n==="tdo"||n==="variables"){active=true;continue}
-  if(n==="debut"){active=false;continue}
-  if(!active)continue;
-  const m=line.match(/^(.+?)\s*:\s*(.+)$/);if(!m)continue;
-  const type=normalize(m[2]);
-  m[1].split(",").forEach(name=>map.set(normalize(name),type));
- }
- return map;
+
+function tokenize(src){
+  const tokens=[];
+  let i=0;
+  while(i<src.length){
+    const c=src[i];
+    if(/\s/.test(c)){i++;continue}
+    if(c==='"'||c==="'"){
+      const q=c;let val="";i++;
+      while(i<src.length&&src[i]!==q){
+        if(src[i]==="\\"&&i+1<src.length){
+          i++;
+          const e=src[i++];
+          val+=e==="n"?"\n":e==="t"?"\t":e;
+        }else val+=src[i++];
+      }
+      if(src[i]!==q)throw Error("Chaîne non terminée");
+      i++;
+      tokens.push({type:"string",value:val});
+      continue;
+    }
+    const number=src.slice(i).match(/^\d+(?:[.,]\d+)?/);
+    if(number){
+      tokens.push({type:"number",value:Number(number[0].replace(",","."))});
+      i+=number[0].length;continue;
+    }
+    const word=src.slice(i).match(/^[\p{L}_][\p{L}\d_]*/u);
+    if(word){
+      tokens.push({type:"word",value:word[0]});
+      i+=word[0].length;continue;
+    }
+    const op=["<=",">=","<>","!=","←","<-",":=","+","-","*","/","=","<",">","(",")"].find(x=>src.startsWith(x,i));
+    if(op){
+      tokens.push({type:"op",value:op});
+      i+=op.length;continue;
+    }
+    throw Error("Caractère inattendu : "+c);
+  }
+  tokens.push({type:"end",value:""});
+  return tokens;
 }
-function findEnd(lines,start,end,open,close){
- let depth=0;
- for(let i=start;i<end;i++){
-  let n=normalize(lines[i]);
-  if(n.startsWith(open))depth++;
-  if(n===close){if(depth===0)return i;depth--}
- }
- return -1;
+
+const precedence={
+  ou:1,et:2,
+  "=":3,"==":3,"<>":3,"!=":3,"<":3,">":3,"<=":3,">=":3,
+  "+":4,"-":4,"*":5,"/":5,div:5,mod:5
+};
+
+function evaluate(src,env){
+  const t=tokenize(src);let p=0;
+  const peek=()=>t[p];
+  const take=()=>t[p++];
+
+  function primary(){
+    const x=take();
+    if(x.type==="number"||x.type==="string")return x.value;
+
+    if(x.type==="word"){
+      const n=norm(x.value);
+      if(n==="vrai")return true;
+      if(n==="faux")return false;
+      if(n==="non")return !Boolean(primary());
+
+      if(peek().value==="("){
+        take();
+        const args=[];
+        if(peek().value!==")"){
+          while(true){
+            args.push(expr(0));
+            if(peek().value!==",")break;
+            take();
+          }
+        }
+        if(take().value!==")")throw Error("Parenthèse fermante attendue");
+        return callFunction(n,args);
+      }
+
+      if(!Object.prototype.hasOwnProperty.call(env,x.value))
+        throw Error("Variable inconnue : "+x.value);
+      return env[x.value];
+    }
+
+    if(x.value==="("){
+      const v=expr(0);
+      if(take().value!==")")throw Error("Parenthèse fermante attendue");
+      return v;
+    }
+    if(x.value==="-"||x.value==="+")
+      return (x.value==="-"?-1:1)*Number(primary());
+
+    throw Error("Expression invalide près de "+x.value);
+  }
+
+  function expr(min){
+    let left=primary();
+    while(true){
+      const x=peek();
+      const op=x.type==="word"?norm(x.value):x.value;
+      const pr=precedence[op];
+      if(pr===undefined||pr<min)break;
+      take();
+      const right=expr(pr+1);
+      switch(op){
+        case "+":left=typeof left==="string"||typeof right==="string"?String(left)+String(right):Number(left)+Number(right);break;
+        case "-":left=Number(left)-Number(right);break;
+        case "*":left=Number(left)*Number(right);break;
+        case "/":if(Number(right)===0)throw Error("Division par zéro");left=Number(left)/Number(right);break;
+        case "div":if(Number(right)===0)throw Error("Division par zéro");left=Math.trunc(Number(left)/Number(right));break;
+        case "mod":if(Number(right)===0)throw Error("Modulo par zéro");left=Number(left)%Number(right);break;
+        case "et":left=Boolean(left)&&Boolean(right);break;
+        case "ou":left=Boolean(left)||Boolean(right);break;
+        case "=":case "==":left=left===right;break;
+        case "<>":case "!=":left=left!==right;break;
+        case "<":left=left<right;break;
+        case ">":left=left>right;break;
+        case "<=":left=left<=right;break;
+        case ">=":left=left>=right;break;
+      }
+    }
+    return left;
+  }
+  const value=expr(0);
+  if(peek().type!=="end")throw Error("Élément inattendu : "+peek().value);
+  return value;
 }
-function findIf(lines,start,end){
- let depth=0,elseAt=-1;
- for(let i=start;i<end;i++){
-  let n=normalize(lines[i]);
-  if(/^si\b/.test(n))depth++;
-  if(n==="sinon"&&depth===0)elseAt=i;
-  if(n==="finsi"){if(depth===0)return{i,end:i,elseAt};depth--}
- }
- return null;
+
+function callFunction(name,args){
+  const a=args[0];
+  switch(name){
+    case "long":return String(a).length;
+    case "ent":return Math.trunc(Number(a));
+    case "abs":return Math.abs(Number(a));
+    case "racine":case "sqrt":return Math.sqrt(Number(a));
+    case "convch":return String(a);
+    case "valeur":{
+      const v=Number(String(a).replace(",","."));
+      if(!Number.isFinite(v))throw Error("Valeur numérique invalide");
+      return v;
+    }
+    case "majus":return String(a).toUpperCase();
+    case "minusc":return String(a).toLowerCase();
+    case "arrondi":return Math.round(Number(a));
+    case "alea":{
+      const min=args.length>1?Number(args[0]):0;
+      const max=args.length>1?Number(args[1]):Number(args[0]);
+      return Math.floor(Math.random()*(max-min+1))+min;
+    }
+    default:throw Error("Fonction inconnue : "+name);
+  }
 }
-function getInput(variable){
- $("inputrow").classList.add("active");$("consoleInput").value="";
- $("consoleInput").placeholder="Value for "+variable;$("consoleInput").focus();
- return new Promise(resolve=>inputResolver=resolve);
+
+function parse(source){
+  const lines=source.split(/\r?\n/)
+    .map((raw,index)=>({s:raw.trim(),line:index+1}))
+    .filter(x=>x.s&&!x.s.startsWith("//"));
+
+  let i=0,types={},env={};
+
+  while(i<lines.length){
+    const {s}=lines[i],n=norm(s);
+    if(n==="variables"||n==="debut"||n==="fin"||n.startsWith("algorithme ")){i++;continue}
+    const m=s.match(/^([\p{L}_][\p{L}\d_]*(?:\s*,\s*[\p{L}_][\p{L}\d_]*)*)\s*:\s*(entier|réel|reel|chaine|chaîne|booléen|booleen)$/iu);
+    if(m){
+      for(const name of m[1].split(",").map(x=>x.trim())){
+        if(types[name])throw Error("Variable déjà déclarée : "+name+" ligne "+lines[i].line);
+        types[name]=norm(m[2]);
+        env[name]=types[name]==="chaine"?"":types[name]==="booleen"?false:0;
+      }
+      i++;continue;
+    }
+    break;
+  }
+
+  function block(stops=[]){
+    const body=[];
+    while(i<lines.length&&!stops.includes(norm(lines[i].s))){
+      const row=lines[i],s=row.s,n=norm(s);let m;
+
+      if((m=s.match(/^si\s+(.+)\s+alors$/iu))){
+        i++;
+        const yes=block(["sinon","finsi"]);
+        let no=[];
+        if(i<lines.length&&norm(lines[i].s)==="sinon"){
+          i++;no=block(["finsi"]);
+        }
+        if(i>=lines.length)throw Error("FinSi manquant ligne "+row.line);
+        i++;
+        body.push({k:"if",test:m[1],yes,no,line:row.line});
+        continue;
+      }
+
+      if((m=s.match(/^pour\s+([\p{L}_][\p{L}\d_]*)\s+de\s+(.+?)\s+à\s+(.+?)\s+faire$/iu))){
+        i++;
+        const b=block(["finpour"]);
+        if(i>=lines.length)throw Error("FinPour manquant ligne "+row.line);
+        i++;
+        body.push({k:"for",name:m[1],from:m[2],to:m[3],body:b,line:row.line});
+        continue;
+      }
+
+      if((m=s.match(/^tantque\s+(.+)\s+faire$/iu))){
+        i++;
+        const b=block(["fintantque"]);
+        if(i>=lines.length)throw Error("FinTantQue manquant ligne "+row.line);
+        i++;
+        body.push({k:"while",test:m[1],body:b,line:row.line});
+        continue;
+      }
+
+      if(n==="repeter"){
+        i++;
+        const b=block(["jusqua","jusqu'a"]);
+        if(i>=lines.length)throw Error("Jusqu'à manquant ligne "+row.line);
+        const test=lines[i++].s.replace(/^jusqu['’]à\s*/i,"");
+        body.push({k:"repeat",test,body:b,line:row.line});
+        continue;
+      }
+
+      if((m=s.match(/^ecrire(?:_nl)?\s*\((.*)\)$/iu))){
+        i++;
+        body.push({k:"print",args:splitArgs(m[1]),line:row.line});
+        continue;
+      }
+
+      if((m=s.match(/^lire\s*\(\s*([\p{L}_][\p{L}\d_]*)\s*\)$/iu))){
+        if(!types[m[1]])throw Error("Variable non déclarée : "+m[1]+" ligne "+row.line);
+        i++;
+        body.push({k:"read",name:m[1],line:row.line});
+        continue;
+      }
+
+      if((m=s.match(/^([\p{L}_][\p{L}\d_]*)\s*(?:←|<-|:=|=)\s*(.+)$/u))){
+        if(!types[m[1]])throw Error("Variable non déclarée : "+m[1]+" ligne "+row.line);
+        i++;
+        body.push({k:"set",name:m[1],expr:m[2],line:row.line});
+        continue;
+      }
+
+      if(n==="debut"||n==="fin"||n==="variables"||n.startsWith("algorithme ")){i++;continue}
+      throw Error("Instruction inconnue ligne "+row.line+": "+s);
+    }
+    return body;
+  }
+
+  const body=block();
+  if(i<lines.length)throw Error("Instruction inattendue ligne "+lines[i].line);
+  return {body,types,env};
+}
+
+function execute(program){
+  let steps=0;
+  const env=program.env;
+
+  function exec(body){
+    for(const s of body){
+      if(!running)throw Error("Exécution arrêtée");
+      if(++steps>100000)throw Error("Limite d'exécution atteinte");
+
+      if(s.k==="print"){
+        const values=s.args.map(x=>evaluate(x,env));
+        output(values.map(String).join(" "));
+      }
+      else if(s.k==="set"){
+        const v=evaluate(s.expr,env),type=program.types[s.name];
+        if(type==="entier"&&!Number.isInteger(v))throw Error(s.name+" attend un entier");
+        if(type==="reel"&&typeof v!=="number")throw Error(s.name+" attend un nombre");
+        if(type==="chaine"&&typeof v!=="string")throw Error(s.name+" attend une chaîne");
+        if(type==="booleen"&&typeof v!=="boolean")throw Error(s.name+" attend un booléen");
+        env[s.name]=v;
+      }
+      else if(s.k==="read"){
+        const value=readConsole(s.name);
+        if(value===null)throw Error("Saisie annulée");
+        const type=program.types[s.name];
+        let v=value;
+        if(type==="entier"||type==="reel"){
+          v=Number(value.replace(",","."));
+          if(!Number.isFinite(v)||(type==="entier"&&!Number.isInteger(v)))
+            throw Error("Valeur numérique invalide pour "+s.name);
+        }else if(type==="booleen"){
+          if(norm(value)==="vrai")v=true;
+          else if(norm(value)==="faux")v=false;
+          else throw Error("Saisir Vrai ou Faux");
+        }
+        env[s.name]=v;
+      }
+      else if(s.k==="if"){
+        exec(evaluate(s.test,env)?s.yes:s.no);
+      }
+      else if(s.k==="for"){
+        const a=Number(evaluate(s.from,env));
+        const b=Number(evaluate(s.to,env));
+        const step=a<=b?1:-1;
+        for(let x=a;step>0?x<=b:x>=b;x+=step){
+          env[s.name]=x;
+          exec(s.body);
+          if(++steps>100000)throw Error("Limite de boucle atteinte");
+        }
+      }
+      else if(s.k==="while"){
+        let count=0;
+        while(evaluate(s.test,env)){
+          exec(s.body);
+          if(++count>10000)throw Error("Limite TantQue atteinte");
+        }
+      }
+      else if(s.k==="repeat"){
+        let count=0;
+        do{
+          exec(s.body);
+          if(++count>10000)throw Error("Limite Répéter atteinte");
+        }while(!evaluate(s.test,env));
+      }
+    }
+  }
+  exec(program.body);
+}
+
+function readConsole(name){
+  return new Promise(resolve=>{
+    waitingInput=resolve;
+    $("inputRow").classList.add("show");
+    $("consoleInput").placeholder="Value for "+name+"...";
+    $("consoleInput").value="";
+    $("consoleInput").focus();
+  });
 }
 function submitInput(){
- if(!inputResolver)return;
- const val=$("consoleInput").value;log("> "+val,"input");
- $("inputrow").classList.remove("active");
- let r=inputResolver;inputResolver=null;r(val);
+  if(!waitingInput)return;
+  const value=$("consoleInput").value;
+  const resolve=waitingInput;
+  waitingInput=null;
+  $("inputRow").classList.remove("show");
+  output("> "+value);
+  resolve(value);
 }
-$("submitInput").onclick=submitInput;
-$("consoleInput").onkeydown=e=>{if(e.key==="Enter")submitInput()};
+$("consoleInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter")submitInput();
+});
 
-async function run(){
- if(running)return;running=true;$("runBtn").textContent="⏳ Running";
- $("editorStatus").textContent="Executing...";clearConsole();
- const src=code(),lines=src.split(/\r?\n/),types=getTypes(lines),declared=new Set(types.keys()),env=new Map();
- let steps=0;const LIMIT=100000;
- function assign(name,value){
-  const n=normalize(name);if(!declared.has(n))throw Error("Variable non déclarée : "+name);
-  env.set(n,value);
- }
- async function execute(start,end){
-  for(let i=start;i<end;i++){
-   if(++steps>LIMIT)throw Error("Limite d'exécution atteinte");
-   let line=lines[i].trim(),m;
-   if(!line||line.startsWith("//"))continue;
-   if(/^(algorithme|debut|fin|tdo|variables)$/i.test(normalize(line)))continue;
-   if((m=line.match(/^Ecrire(?:_nl)?\s*\((.*)\)$/i))){
-    log(splitArgs(m[1]).map(x=>String(evaluate(x,env))).join(" "));continue;
-   }
-   if((m=line.match(/^Lire\s*\((.+)\)$/i))){
-    for(const name of splitArgs(m[1])){
-     const n=normalize(name);if(!declared.has(n))throw Error("Variable non déclarée : "+name);
-     const raw=await getInput(name),type=types.get(n);let v=raw;
-     if(type.includes("entier"))v=parseInt(raw,10);
-     else if(type.includes("reel"))v=parseFloat(raw);
-     else if(type.includes("booleen"))v=normalize(raw)==="vrai";
-     if((type.includes("entier")||type.includes("reel"))&&!Number.isFinite(v))throw Error("Valeur invalide : "+name);
-     env.set(n,v);
-    }continue;
-   }
-   if((m=line.match(/^(.+?)\s*(←|<-|:=|=)\s*(.+)$/))){
-    assign(m[1].trim(),evaluate(m[3],env));continue;
-   }
-   if((m=line.match(/^Si\s+(.+?)\s+Alors$/i))){
-    const b=findIf(lines,i+1,end);if(!b)throw Error("FinSi manquant");
-    if(evaluate(m[1],env))await execute(i+1,b.elseAt<0?b.end:b.elseAt);
-    else if(b.elseAt>=0)await execute(b.elseAt+1,b.end);
-    i=b.end;continue;
-   }
-   if((m=line.match(/^Pour\s+(\w+)\s+de\s+(.+?)\s+à\s+(.+?)(?:\s+Pas\s+(.+?))?\s+Faire$/i))){
-    const variable=m[1],from=Number(evaluate(m[2],env)),to=Number(evaluate(m[3],env)),step=m[4]?Number(evaluate(m[4],env)):1;
-    if(!step)throw Error("Pas ne peut pas être zéro");
-    const j=findEnd(lines,i+1,end,"pour","finpour");if(j<0)throw Error("FinPour manquant");
-    for(let v=from;step>0?v<=to:v>=to;v+=step){
-     if(++steps>LIMIT)throw Error("Limite d'exécution atteinte");
-     env.set(normalize(variable),v);await execute(i+1,j);
-    }i=j;continue;
-   }
-   if((m=line.match(/^TantQue\s+(.+?)\s+Faire$/i))){
-    const j=findEnd(lines,i+1,end,"tantque","fintantque");if(j<0)throw Error("FinTantQue manquant");
-    while(evaluate(m[1],env)){if(++steps>LIMIT)throw Error("Boucle infinie ?");await execute(i+1,j)}
-    i=j;continue;
-   }
-   if(normalize(line)==="repeter"){
-    let j=i+1;while(j<end&&!normalize(lines[j]).startsWith("jusqu"))j++;
-    if(j>=end)throw Error("Jusqu'à manquant");
-    const condition=lines[j].trim().replace(/^jusqu['’àa\s]*/i,"");
-    do{if(++steps>LIMIT)throw Error("Limite atteinte");await execute(i+1,j)}while(!evaluate(condition,env));
-    i=j;continue;
-   }
-   throw Error("Instruction inconnue : "+line);
+async function runProgram(){
+  if(running)return;
+  clearOutput();
+  running=true;
+  status("Running...");
+  try{
+    const program=parse(getCode());
+    currentProgram=program;
+    await executeAsync(program);
+    if(running){
+      output("✓ Program finished successfully","success");
+      status("Execution successful");
+    }
+  }catch(e){
+    output("ERROR: "+e.message,"error");
+    status("Execution error");
+  }finally{
+    running=false;
   }
- }
- try{
-  if(!/^\s*Algorithme\b/i.test(src))throw Error("Algorithme manquant");
-  const start=lines.findIndex(x=>normalize(x)==="debut"),end=lines.findIndex((x,i)=>i>start&&normalize(x)==="fin");
-  if(start<0)throw Error("Début manquant");if(end<0)throw Error("Fin manquant");
-  log("Program started","success");await execute(start+1,end);log("Program finished successfully.","success");
- }catch(e){log("ERROR: "+e.message,"error")}
- finally{running=false;$("runBtn").textContent="▶ Run";$("editorStatus").textContent="Algorizmi · Ready";$("inputrow").classList.remove("active")}
 }
+async function executeAsync(program){
+  // Execute using the same interpreter, yielding periodically to keep
+  // the interface responsive. Input pauses until the console receives text.
+  let steps=0;
+  const env=program.env;
+
+  async function exec(body){
+    for(const s of body){
+      if(!running)throw Error("Execution stopped");
+      if(++steps>100000)throw Error("Execution limit reached");
+
+      if(s.k==="print"){
+        output(s.args.map(x=>String(evaluate(x,env))).join(" "));
+      }else if(s.k==="set"){
+        const v=evaluate(s.expr,env),type=program.types[s.name];
+        if(type==="entier"&&!Number.isInteger(v))throw Error(s.name+" attend un entier");
+        if(type==="reel"&&typeof v!=="number")throw Error(s.name+" attend un nombre");
+        if(type==="chaine"&&typeof v!=="string")throw Error(s.name+" attend une chaîne");
+        if(type==="booleen"&&typeof v!=="boolean")throw Error(s.name+" attend un booléen");
+        env[s.name]=v;
+      }else if(s.k==="read"){
+        const raw=await readConsole(s.name);
+        const type=program.types[s.name];
+        let v=raw;
+        if(type==="entier"||type==="reel"){
+          v=Number(raw.replace(",","."));
+          if(!Number.isFinite(v)||(type==="entier"&&!Number.isInteger(v)))
+            throw Error("Valeur numérique invalide");
+        }else if(type==="booleen"){
+          if(norm(raw)==="vrai")v=true;
+          else if(norm(raw)==="faux")v=false;
+          else throw Error("Saisir Vrai ou Faux");
+        }
+        env[s.name]=v;
+      }else if(s.k==="if"){
+        await exec(evaluate(s.test,env)?s.yes:s.no);
+      }else if(s.k==="for"){
+        const a=Number(evaluate(s.from,env));
+        const b=Number(evaluate(s.to,env));
+        const step=a<=b?1:-1;
+        for(let x=a;step>0?x<=b:x>=b;x+=step){
+          env[s.name]=x;
+          await exec(s.body);
+          if(++steps>100000)throw Error("Limite de boucle atteinte");
+          if(steps%100===0)await new Promise(r=>setTimeout(r,0));
+        }
+      }else if(s.k==="while"){
+        let count=0;
+        while(evaluate(s.test,env)){
+          await exec(s.body);
+          if(++count>10000)throw Error("Limite TantQue atteinte");
+          if(count%100===0)await new Promise(r=>setTimeout(r,0));
+        }
+      }else if(s.k==="repeat"){
+        let count=0;
+        do{
+          await exec(s.body);
+          if(++count>10000)throw Error("Limite Répéter atteinte");
+        }while(!evaluate(s.test,env));
+      }
+    }
+  }
+  await exec(program.body);
+}
+
+function stopProgram(){
+  running=false;
+  if(waitingInput){
+    const resolve=waitingInput;
+    waitingInput=null;
+    $("inputRow").classList.remove("show");
+    resolve("");
+  }
+  status("Stopped");
+}
+
+const docs={
+  Algorithme:"Starts a program.",
+  Variables:"Starts variable declarations.",
+  Début:"Starts the instructions.",
+  Fin:"Ends the algorithm.",
+  Ecrire:"Displays text and values.",
+  Lire:"Reads a value into a variable.",
+  Si:"Starts a conditional block.",
+  Alors:"Starts the body of a condition.",
+  Sinon:"Alternative branch of a condition.",
+  FinSi:"Closes a conditional block.",
+  Pour:"Repeats instructions over a range.",
+  Faire:"Starts a loop body.",
+  FinPour:"Closes a Pour loop.",
+  TantQue:"Repeats while a condition is true.",
+  FinTantQue:"Closes a TantQue loop.",
+  Répéter:"Runs a block at least once.",
+  "Jusqu'à":"Ends a Répéter block when its condition is true.",
+  Long:"Returns the length of a string.",
+  Ent:"Converts a value to an integer.",
+  Abs:"Returns the absolute value.",
+  Racine:"Returns the square root.",
+  ConvCh:"Converts a value to a string.",
+  Valeur:"Converts text to a number.",
+  Majus:"Converts text to uppercase.",
+  Minusc:"Converts text to lowercase.",
+  Arrondi:"Rounds a number.",
+  Alea:"Returns a random integer."
+};
+
+/* FIXED LIVE DIAGNOSTICS:
+   Never parse incomplete code while the user is typing.
+   This prevents the whole editor from showing red errors
+   simply because a block has not been finished yet.
+*/
+function analyze(){
+  if(!monacoReady||!editor)return;
+  clearTimeout(timer);
+  timer=setTimeout(()=>{
+    const model=editor.getModel();
+    monaco.editor.setModelMarkers(model,"algorizmi",[]);
+    status("Ready");
+    updateCounts();
+  },250);
+}
+
+function showRunError(error){
+  const model=editor&&editor.getModel();
+  if(!model)return;
+  const match=String(error.message).match(/ligne\s+(\d+)/i);
+  if(!match)return;
+  const line=Math.min(Number(match[1]),model.getLineCount());
+  monaco.editor.setModelMarkers(model,"algorizmi",[{
+    severity:monaco.MarkerSeverity.Error,
+    message:error.message,
+    startLineNumber:line,
+    startColumn:1,
+    endLineNumber:line,
+    endColumn:model.getLineMaxColumn(line)
+  }]);
+}
+
+const fallback=$("fallback");
+fallback.addEventListener("input",updateCounts);
+fallback.addEventListener("keydown",e=>{
+  if(e.key==="Tab"){
+    e.preventDefault();
+    const a=fallback.selectionStart,b=fallback.selectionEnd;
+    fallback.setRangeText("  ",a,b,"end");
+  }
+  if((e.ctrlKey||e.metaKey)&&e.key==="Enter")runProgram();
+});
+
+require.config({
+  paths:{vs:"https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs"}
+});
+
+require(["vs/editor/editor.main"],()=>{
+  monacoReady=true;
+
+  monaco.languages.register({id:"algorizmi"});
+  monaco.languages.setMonarchTokensProvider("algorizmi",{
+    tokenizer:{root:[
+      [/\/\/.*$/,"comment"],
+      [/"([^"\\]|\\.)*"/,"string"],
+      [/'([^'\\]|\\.)*'/,"string"],
+      [/\b(entier|réel|reel|chaine|booléen|booleen)\b/i,"type"],
+      [/\b(Algorithme|Variables|Début|Fin|Ecrire|Ecrire_nl|Lire|Si|Alors|Sinon|FinSi|Pour|de|à|Faire|FinPour|TantQue|FinTantQue|Répéter|Jusqu'à|Vrai|Faux|et|ou|non|div|mod)\b/i,"keyword"],
+      [/\d+([.,]\d+)?/,"number"],
+      [/←|<-|:=|<=|>=|<>|[=+\-*\/<>]/,"operator"],
+      [/[a-zA-ZÀ-ÿ_][\wÀ-ÿ]*/,"identifier"]
+    ]}
+  });
+
+  monaco.editor.defineTheme("aero",{
+    base:"vs",
+    inherit:true,
+    rules:[
+      {token:"keyword",foreground:"087EAE",fontStyle:"bold"},
+      {token:"type",foreground:"9860B5"},
+      {token:"string",foreground:"16875C"},
+      {token:"number",foreground:"C47B27"},
+      {token:"comment",foreground:"8AA3AD",fontStyle:"italic"},
+      {token:"operator",foreground:"1687B2"}
+    ],
+    colors:{
+      "editor.background":"#F5FCFF",
+      "editor.foreground":"#16475E",
+      "editorLineNumber.foreground":"#9BB8C5",
+      "editorLineNumber.activeForeground":"#277C9D",
+      "editorCursor.foreground":"#087DB9",
+      "editor.selectionBackground":"#8EDCF477",
+      "editor.lineHighlightBackground":"#E9F8FC",
+      "editorGutter.background":"#F5FCFF",
+      "editorWidget.background":"#F5FCFF",
+      "editorSuggestWidget.background":"#F5FCFF",
+      "editorSuggestWidget.border":"#B9E5EF"
+    }
+  });
+
+  editor=monaco.editor.create($("editor"),{
+    value:examples.calc,
+    language:"algorizmi",
+    theme:"aero",
+    automaticLayout:true,
+    fontFamily:"Consolas, monospace",
+    fontSize:14,
+    lineHeight:24,
+    minimap:{enabled:false},
+    scrollBeyondLastLine:false,
+    wordWrap:"on",
+    tabSize:2,
+    quickSuggestions:true,
+    suggestOnTriggerCharacters:true,
+    parameterHints:{enabled:true},
+    padding:{top:14,bottom:14},
+    renderLineHighlight:"line",
+    smoothScrolling:true,
+    cursorBlinking:"smooth",
+    cursorSmoothCaretAnimation:"on",
+    bracketPairColorization:{enabled:true},
+    guides:{bracketPairs:true}
+  });
+
+  $("fallback").style.display="none";
+  editor.onDidChangeModelContent(()=>{
+    analyze();
+    updateCounts();
+  });
+  editor.onDidChangeCursorPosition(e=>{
+    $("cursor").textContent="Ln "+e.position.lineNumber+", Col "+e.position.column;
+  });
+  editor.addCommand(monaco.KeyMod.CtrlCmd|monaco.KeyCode.Enter,runProgram);
+  editor.addCommand(monaco.KeyMod.CtrlCmd|monaco.KeyCode.KeyS,saveFile);
+  editor.addCommand(monaco.KeyMod.CtrlCmd|monaco.KeyCode.KeyO,openFile);
+
+  const keywords=Object.keys(docs).concat([
+    "entier","réel","chaine","booléen","Vrai","Faux","et","ou","non","div","mod"
+  ]);
+
+  monaco.languages.registerCompletionItemProvider("algorizmi",{
+    triggerCharacters:[" ","."],
+    provideCompletionItems(model,pos){
+      const word=model.getWordUntilPosition(pos);
+      const range={
+        startLineNumber:pos.lineNumber,
+        endLineNumber:pos.lineNumber,
+        startColumn:word.startColumn,
+        endColumn:word.endColumn
+      };
+      const vars=[...model.getValue().matchAll(
+        /^\s*([\p{L}_][\p{L}\d_]*(?:\s*,\s*[\p{L}_][\p{L}\d_]*)*)\s*:\s*(?:entier|réel|reel|chaine|booléen)/gimu
+      )].flatMap(m=>m[1].split(",").map(x=>x.trim()));
+
+      const suggestions=keywords.map(k=>({
+        label:k,
+        kind:monaco.languages.CompletionItemKind.Keyword,
+        insertText:k,
+        range,
+        detail:"Algorizmi keyword",
+        documentation:docs[k]||"Algorizmi language keyword"
+      }));
+
+      for(const v of new Set(vars)){
+        suggestions.push({
+          label:v,
+          kind:monaco.languages.CompletionItemKind.Variable,
+          insertText:v,
+          range,
+          detail:"Declared variable"
+        });
+      }
+      return {suggestions};
+    }
+  });
+
+  monaco.languages.registerHoverProvider("algorizmi",{
+    provideHover(model,pos){
+      const w=model.getWordAtPosition(pos);
+      if(!w)return;
+      return {contents:[
+        {value:"**"+w.word+"**"},
+        {value:docs[w.word]||"Algorizmi identifier"}
+      ]};
+    }
+  });
+
+  editor.focus();
+  analyze();
+  updateCounts();
+  status("Ready");
+});
+
+/* GAME ARCADE */
+
+const gameExamples={
+guess:`Algorithme Deviner
+Variables
+secret, proposition : entier
+Début
+  secret ← Alea(1, 20)
+  Lire(proposition)
+  Si proposition = secret Alors
+    Ecrire("Bravo !")
+  Sinon
+    Ecrire("Essaie encore.")
+  FinSi
+Fin`,
+
+rps:`Algorithme PierrePapierCiseaux
+Variables
+choix : entier
+ordinateur : entier
+Début
+  choix ← 1
+  ordinateur ← Alea(1, 3)
+  Si choix = ordinateur Alors
+    Ecrire("Egalité")
+  Sinon
+    Ecrire("Comparer les choix")
+  FinSi
+Fin`,
+
+memory:`Algorithme Memoire
+Variables
+essais, score : entier
+Début
+  essais ← 0
+  score ← 0
+  TantQue essais < 5 Faire
+    Ecrire("Trouve une paire")
+    essais ← essais + 1
+  FinTantQue
+  Ecrire("Score : ", score)
+Fin`,
+
+math:`Algorithme CalculMental
+Variables
+a, b, reponse : entier
+Début
+  a ← Alea(1, 10)
+  b ← Alea(1, 10)
+  Ecrire("Combien font ", a, " + ", b, " ?")
+  Lire(reponse)
+  Si reponse = a + b Alors
+    Ecrire("Correct !")
+  Sinon
+    Ecrire("Essaie encore")
+  FinSi
+Fin`,
+
+reaction:`Algorithme Reaction
+Variables
+pret : booleen
+Début
+  pret ← Faux
+  Ecrire("Attends le signal...")
+  pret ← Vrai
+  Ecrire("Maintenant !")
+Fin`,
+
+higher:`Algorithme PlusOuMoins
+Variables
+nombre, choix : entier
+Début
+  nombre ← Alea(1, 100)
+  Lire(choix)
+  Si choix > nombre Alors
+    Ecrire("Trop grand")
+  Sinon
+    Ecrire("Trop petit ou égal")
+  FinSi
+Fin`
+};
+
+function startGame(name){
+  $("gameCards").classList.add("hidden");
+  $("gameScreen").classList.remove("hidden");
+  showPage("arcade");
+  gameSource=gameExamples[name]||"";
+  $("gameCode").textContent=gameSource;
+  const area=$("gameArea");
+  area.innerHTML="";
+  const title={
+    guess:"Number Guess",
+    rps:"Rock Paper Scissors",
+    memory:"Memory Match",
+    math:"Math Sprint",
+    reaction:"Reaction Test",
+    higher:"Higher or Lower"
+  }[name]||"Game";
+  $("gameTitle").textContent=title;
+
+  if(name==="guess")gameGuess(area);
+  if(name==="rps")gameRPS(area);
+  if(name==="memory")gameMemory(area);
+  if(name==="math")gameMath(area);
+  if(name==="reaction")gameReaction(area);
+  if(name==="higher")gameHigher(area);
+}
+function closeGame(){
+  $("gameScreen").classList.add("hidden");
+  $("gameCards").classList.remove("hidden");
+}
+function copyGameCode(){
+  navigator.clipboard.writeText(gameSource).then(()=>alert("Algorithm copied!"));
+}
+function openGameCode(){
+  showPage("studio");
+  setCode(gameSource);
+  status("Game example loaded");
+}
+function gameGuess(area){
+  let secret=Math.floor(Math.random()*20)+1;
+  let tries=0;
+  area.innerHTML=`
+    <h2>Guess the number</h2>
+    <p>I'm thinking of a number between 1 and 20.</p>
+    <input id="guessInput" type="number" min="1" max="20" placeholder="Number">
+    <div class="game-actions"><button class="primary" id="guessBtn">Guess</button><button id="guessReset">New game</button></div>
+    <div class="game-result" id="guessResult"></div>
+    <div id="guessTries">Attempts: 0</div>`;
+  $("guessBtn").onclick=()=>{
+    const n=Number($("guessInput").value);
+    if(!Number.isInteger(n)||n<1||n>20){$("guessResult").textContent="Enter a number from 1 to 20.";return}
+    tries++;
+    if(n===secret)$("guessResult").textContent="Correct! You got it in "+tries+" tries.";
+    else $("guessResult").textContent=n<secret?"Too low. Try again!":"Too high. Try again!";
+    $("guessTries").textContent="Attempts: "+tries;
+  };
+  $("guessReset").onclick=()=>gameGuess(area);
+}
+function gameRPS(area){
+  area.innerHTML=`
+    <h2>Rock Paper Scissors</h2>
+    <p>Choose your move.</p>
+    <div class="game-actions">
+      <button data-rps="Rock">✊ Rock</button>
+      <button data-rps="Paper">✋ Paper</button>
+      <button data-rps="Scissors">✌️ Scissors</button>
+    </div>
+    <div class="game-result" id="rpsResult"></div>`;
+  area.querySelectorAll("[data-rps]").forEach(btn=>{
+    btn.onclick=()=>{
+      const user=btn.dataset.rps;
+      const choices=["Rock","Paper","Scissors"];
+      const cpu=choices[Math.floor(Math.random()*3)];
+      let result=user===cpu?"It's a tie!":
+        (user==="Rock"&&cpu==="Scissors")||
+        (user==="Paper"&&cpu==="Rock")||
+        (user==="Scissors"&&cpu==="Paper")?"You win!":"Computer wins!";
+      $("rpsResult").textContent="You: "+user+" · Computer: "+cpu+" · "+result;
+    };
+  });
+}
+function gameMemory(area){
+  const symbols=["🍋","🌊","⭐","🍀","🍉","🌸","🍇","☀️"];
+  let cards=[...symbols,...symbols].sort(()=>Math.random()-.5);
+  let first=null,lock=false,matches=0,moves=0;
+  area.innerHTML=`<h2>Memory Match</h2><p>Find all matching pairs.</p><div class="memory-grid" id="memoryGrid"></div><div class="game-result" id="memoryResult">Moves: 0</div><button id="memoryReset">Restart</button>`;
+  const grid=$("memoryGrid");
+  cards.forEach((symbol,index)=>{
+    const b=document.createElement("button");
+    b.className="memory-cell";
+    b.textContent="?";
+    b.dataset.symbol=symbol;
+    b.onclick=()=>{
+      if(lock||b.classList.contains("matched")||b===first)return;
+      b.textContent=symbol;
+      if(!first){first=b;return}
+      moves++;
+      if(first.dataset.symbol===b.dataset.symbol){
+        first.classList.add("matched");b.classList.add("matched");
+        first.disabled=true;b.disabled=true;
+        first=null;matches++;
+        if(matches===8)$("memoryResult").textContent="You won in "+moves+" moves!";
+        else $("memoryResult").textContent="Moves: "+moves;
+      }else{
+        lock=true;
+        const previous=first;
+        first=null;
+        setTimeout(()=>{previous.textContent="?";b.textContent="?";lock=false},700);
+        $("memoryResult").textContent="Moves: "+moves;
+      }
+    };
+    grid.appendChild(b);
+  });
+  $("memoryReset").onclick=()=>gameMemory(area);
+}
+function gameMath(area){
+  let a,b,answer,score=0,round=0;
+  area.innerHTML=`
+    <h2>Math Sprint</h2>
+    <p id="mathQuestion"></p>
+    <input id="mathAnswer" type="number" placeholder="Answer">
+    <div class="game-actions"><button class="primary" id="mathSubmit">Submit</button></div>
+    <div class="game-result" id="mathResult">Score: 0</div>`;
+  function next(){
+    a=Math.floor(Math.random()*12)+1;
+    b=Math.floor(Math.random()*12)+1;
+    answer=a+b;
+    $("mathQuestion").textContent=a+" + "+b+" = ?";
+    $("mathAnswer").value="";
+    $("mathAnswer").focus();
+  }
+  $("mathSubmit").onclick=()=>{
+    if(Number($("mathAnswer").value)===answer){
+      score++;$("mathResult").textContent="Correct! Score: "+score;
+    }else $("mathResult").textContent="Not quite. The answer was "+answer+". Score: "+score;
+    round++;
+    if(round<10)setTimeout(next,700);
+    else $("mathQuestion").textContent="Finished! Final score: "+score+"/10";
+  };
+  next();
+}
+function gameReaction(area){
+  let started=0,timer=null,ready=false;
+  area.innerHTML=`
+    <h2>Reaction Test</h2>
+    <p>Press start. Wait for the screen to turn green, then click as quickly as you can.</p>
+    <div id="reactionBox" style="padding:35px;border-radius:16px;background:#d9edf4;margin:15px 0;font-weight:bold">Press Start</div>
+    <button class="primary" id="reactionStart">Start</button>
+    <div class="game-result" id="reactionResult"></div>`;
+  $("reactionStart").onclick=()=>{
+    clearTimeout(timer);ready=false;
+    $("reactionBox").style.background="#d9edf4";
+    $("reactionBox").textContent="Wait...";
+    $("reactionResult").textContent="";
+    timer=setTimeout(()=>{
+      ready=true;started=performance.now();
+      $("reactionBox").style.background="#9ce9ba";
+      $("reactionBox").textContent="CLICK NOW!";
+    },1000+Math.random()*3000);
+  };
+  $("reactionBox").onclick=()=>{
+    if(!ready){
+      $("reactionResult").textContent="Too early! Press Start and wait.";
+      clearTimeout(timer);return;
+    }
+    ready=false;
+    $("reactionResult").textContent="Your reaction time: "+Math.round(performance.now()-started)+" ms";
+    $("reactionBox").textContent="Done!";
+  };
+}
+function gameHigher(area){
+  let current=Math.floor(Math.random()*13)+1,score=0;
+  area.innerHTML=`
+    <h2>Higher or Lower</h2>
+    <p>Will the next number be higher or lower?</p>
+    <div style="font-size:48px;font-weight:bold" id="higherNumber">${current}</div>
+    <div class="game-actions">
+      <button class="primary" id="higherBtn">Higher ↑</button>
+      <button class="primary" id="lowerBtn">Lower ↓</button>
+    </div>
+    <div class="game-result" id="higherResult">Score: 0</div>`;
+  function guess(choice){
+    const next=Math.floor(Math.random()*13)+1;
+    const correct=choice==="higher"?next>current:next<current;
+    $("higherResult").textContent=(correct?"Correct!":"Not quite!")+" Next number: "+next;
+    if(correct)score++;else score=0;
+    current=next;
+    $("higherNumber").textContent=current;
+    $("higherResult").textContent+=" · Score: "+score;
+  }
+  $("higherBtn").onclick=()=>guess("higher");
+  $("lowerBtn").onclick=()=>guess("lower");
+}
+
+setCode(examples.calc);
+updateCounts();
 </script>
 </body>
 </html>
-
