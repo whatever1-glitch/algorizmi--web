@@ -1,251 +1,146 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Algorizmi Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
-:root{
-  --bg:#d9efff;
-  --glass:rgba(255,255,255,.56);
-  --glass2:rgba(255,255,255,.72);
-  --line:rgba(255,255,255,.8);
-  --blue:#3a9cff;
-  --cyan:#68e0ee;
-  --green:#5ad7a0;
-  --text:#254765;
-  --muted:#7194ae;
-  --shadow:0 12px 45px rgba(53,117,167,.15);
+:root {
+  --text:#254d6c;
+  --muted:#7898b1;
+  --glass:rgba(255,255,255,.53);
+  --border:rgba(255,255,255,.88);
+  --shadow:0 12px 40px rgba(65,130,177,.16);
 }
-
 *{box-sizing:border-box}
 body{
-  margin:0;
-  min-height:100vh;
-  color:var(--text);
+  margin:0;min-height:100vh;color:var(--text);
   font-family:Inter,sans-serif;
   background:
-    radial-gradient(ellipse at 15% 5%,#fff 0%,transparent 38%),
-    radial-gradient(ellipse at 85% 10%,#a9e6ff 0%,transparent 38%),
-    linear-gradient(135deg,#c9e8ff,#e8f9ff 45%,#bde9f7);
-  overflow-x:hidden;
+    radial-gradient(ellipse at 10% 5%,#fff,transparent 35%),
+    radial-gradient(ellipse at 90% 10%,#a5e5ff,transparent 40%),
+    linear-gradient(140deg,#c9e9ff,#e9faff 48%,#b5e5f6);
 }
-
-body:before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at 80% 85%,rgba(255,255,255,.75),transparent 18%),
-    radial-gradient(circle at 10% 80%,rgba(110,235,220,.2),transparent 20%);
-}
-
 .bubble{
-  position:fixed;
-  border-radius:50%;
-  pointer-events:none;
-  filter:blur(1px);
+  position:fixed;pointer-events:none;border-radius:50%;
+  background:linear-gradient(140deg,#ffffffa8,#73d9ff20);
+  box-shadow:inset 0 5px 20px #ffffffaa,0 15px 35px #60b9e322;
   animation:float 12s ease-in-out infinite;
-  background:linear-gradient(135deg,rgba(255,255,255,.65),rgba(112,216,255,.13));
-  box-shadow:inset 0 3px 15px #ffffffaa,0 10px 35px #77bfe433;
 }
-.b1{width:140px;height:140px;top:9%;right:3%}
-.b2{width:65px;height:65px;bottom:18%;left:3%;animation-delay:-5s}
-.b3{width:28px;height:28px;top:45%;right:7%;animation-delay:-2s}
+.b1{width:130px;height:130px;right:5%;top:8%}
+.b2{width:60px;height:60px;left:3%;bottom:18%;animation-delay:-4s}
+.b3{width:24px;height:24px;right:8%;bottom:27%;animation-delay:-2s}
+@keyframes float{50%{transform:translateY(-18px)}}
+@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-22px)}
+.glass{
+  background:var(--glass);backdrop-filter:blur(24px) saturate(145%);
+  -webkit-backdrop-filter:blur(24px) saturate(145%);
+  border:1px solid var(--border);box-shadow:var(--shadow),inset 0 1px white;
+  border-radius:20px;
 }
-@keyframes appear{
-  from{opacity:0;transform:translateY(12px)}
-  to{opacity:1;transform:translateY(0)}
-}
-@keyframes glow{
-  0%,100%{box-shadow:0 0 0 rgba(74,176,255,0)}
-  50%{box-shadow:0 0 16px rgba(74,176,255,.18)}
-}
-
 button{
-  font-family:inherit;
-  border:1px solid rgba(255,255,255,.9);
-  color:var(--text);
-  cursor:pointer;
-  background:linear-gradient(180deg,#ffffffcc,#dff4ffbb);
-  box-shadow:0 3px 8px rgba(71,137,182,.12),inset 0 1px 1px white;
-  transition:.2s;
+  cursor:pointer;color:var(--text);font-family:inherit;
+  border:1px solid white;background:linear-gradient(#ffffffdd,#dff4ffcc);
+  box-shadow:0 3px 10px #6fa8ce22,inset 0 1px white;
+  transition:transform .15s,filter .15s;
 }
 button:hover{transform:translateY(-1px);filter:brightness(1.04)}
 button:active{transform:scale(.96)}
-
-.app{
-  width:min(1500px,96%);
-  margin:22px auto;
-  animation:appear .6s ease both;
-}
-
-.glass{
-  background:var(--glass);
-  backdrop-filter:blur(24px) saturate(150%);
-  -webkit-backdrop-filter:blur(24px) saturate(150%);
-  border:1px solid var(--line);
-  box-shadow:var(--shadow),inset 0 1px 0 #fff;
-  border-radius:22px;
-}
-
+.app{width:min(1600px,96%);margin:20px auto;animation:appear .4s}
 .topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:15px 20px;
-  gap:15px;
-  margin-bottom:14px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;padding:14px 18px;margin-bottom:14px;
 }
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
+.brand{display:flex;align-items:center;gap:12px}
 .logo{
-  width:44px;height:44px;border-radius:15px;
-  display:grid;place-items:center;
-  font-size:22px;font-weight:800;color:white;
-  background:linear-gradient(145deg,#80eaff,#3598f9);
-  box-shadow:0 5px 14px #64baff66,inset 0 2px 3px #ffffffaa;
+  width:44px;height:44px;display:grid;place-items:center;
+  border-radius:15px;color:white;font-size:23px;font-weight:800;
+  background:linear-gradient(145deg,#7beaff,#3697f7);
+  box-shadow:0 5px 15px #51baff55,inset 0 2px 3px #ffffffaa;
 }
-.brand h1{margin:0;font-size:19px;letter-spacing:-.7px}
-.brand small{color:var(--muted);display:block;margin-top:3px;font-size:11px}
+.brand h1{font-size:18px;margin:0}
+.brand small{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:9px 12px;border-radius:11px;font-size:12px;font-weight:600}
+.primary{color:white;background:linear-gradient(#72c9ff,#3796ed)}
+.green{background:linear-gradient(#a5f1ce,#59d4a0);color:#176448}
+.arrow{min-width:45px;font-size:18px;font-weight:800}
 
-.topactions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.btn{border-radius:12px;padding:10px 13px;font-size:12px;font-weight:600}
-.btn.primary{
-  color:white;
-  background:linear-gradient(180deg,#70c8ff,#3896ef);
-  box-shadow:0 5px 15px #379cff55,inset 0 1px 1px #ffffffaa;
-}
-.btn.green{
-  background:linear-gradient(180deg,#9df3c9,#59d5a1);
-  color:#145c48;
-}
-.btn.arrow{font-size:17px;min-width:46px;font-weight:800}
-
-.main{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) 340px;
-  gap:14px;
-}
-.left{display:flex;flex-direction:column;gap:14px;min-width:0}
-.right{display:flex;flex-direction:column;gap:14px}
-
+.main{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:14px}
+.left,.right{display:flex;flex-direction:column;gap:14px;min-width:0}
 .panel{overflow:hidden}
 .panelhead{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:13px 16px;border-bottom:1px solid #ffffffb5;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  flex-wrap:wrap;padding:12px 15px;border-bottom:1px solid #ffffffa8;
   font-size:12px;font-weight:700;
 }
-.panelhead span{display:flex;gap:8px;align-items:center}
-.panelhead small{font-size:10px;color:var(--muted);font-weight:500}
-.editorpanel{min-height:490px}
-.editorwrap{height:450px;position:relative}
+.panelhead small{color:var(--muted);font-weight:500}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap}
+.toolbar button{padding:6px 9px;border-radius:9px;font-size:11px}
+.editorwrap{height:65vh;min-height:450px;max-height:85vh;width:100%}
 #editor{height:100%;width:100%}
-.fallback{
-  width:100%;height:100%;padding:20px;border:0;outline:none;
-  resize:none;font:13px/1.8 "JetBrains Mono",monospace;
-  color:#244b69;background:rgba(255,255,255,.28);
+#fallback{
+  height:100%;width:100%;resize:none;border:0;outline:0;padding:16px;
+  background:transparent;color:var(--text);font:13px/1.8 "JetBrains Mono",monospace;
 }
-.toolbar{display:flex;gap:7px;align-items:center}
-.toolbar button{border-radius:9px;padding:7px 9px;font-size:11px}
 .status{
-  padding:8px 14px;display:flex;justify-content:space-between;
-  color:var(--muted);font-size:10px;background:#ffffff33;
-  border-top:1px solid #ffffffaa;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:10px;padding:8px 12px;
+  border-top:1px solid #ffffffaa;background:#ffffff30;
+  font-size:10px;color:var(--muted);
 }
-
-.consolepanel{min-height:240px}
+.consolepanel{overflow:hidden}
 .console{
-  min-height:190px;max-height:350px;overflow:auto;
-  padding:14px;font:12px/1.8 "JetBrains Mono",monospace;
-  background:rgba(240,250,255,.5);
+  height:320px;min-height:180px;max-height:75vh;resize:vertical;overflow:auto;
+  padding:15px;background:rgba(242,250,255,.55);
+  font:13px/1.8 "JetBrains Mono",monospace;
 }
-.log{white-space:pre-wrap;word-break:break-word}
-.log.info{color:#477a9f}
-.log.error{color:#dc626a}
-.log.success{color:#229c71}
-.log.input{color:#258ad2}
-.inputrow{
-  display:none;gap:8px;padding:10px;
-  border-top:1px solid #ffffffa8;background:#ffffff55;
-}
+.log{white-space:pre-wrap;overflow-wrap:anywhere}
+.error{color:#dc5969}.success{color:#20966e}.input{color:#258bcd}
+.inputrow{display:none;gap:8px;padding:10px;border-top:1px solid white}
 .inputrow.active{display:flex}
 .inputrow input{
-  min-width:0;flex:1;padding:10px 12px;
-  border:1px solid #ffffff;border-radius:12px;
-  background:#ffffffa8;color:var(--text);outline:none;
-  font-family:"JetBrains Mono",monospace;
+  flex:1;min-width:0;padding:10px;border-radius:11px;
+  border:1px solid white;background:#ffffffb8;outline:none;
+  color:var(--text);font:13px "JetBrains Mono",monospace;
 }
-.inputrow button{border-radius:11px;padding:0 15px}
+.inputrow button{border-radius:11px;padding:0 14px}
 .sidecard{padding:15px}
 .sidecard h3{font-size:12px;margin:0 0 12px}
 .sidecard p{font-size:11px;line-height:1.7;color:var(--muted);margin:0}
 .example{
-  padding:10px;border-radius:12px;
-  background:#ffffff55;border:1px solid #ffffff80;
-  font-size:11px;margin-top:8px;cursor:pointer;
-  transition:.2s;
+  margin-top:8px;padding:10px;border-radius:12px;
+  border:1px solid #ffffff90;background:#ffffff50;cursor:pointer;transition:.2s;
+  font-size:11px;
 }
-.example:hover{background:#ffffffaa;transform:translateY(-2px)}
+.example:hover{transform:translateY(-2px);background:#ffffffa0}
 .example strong{display:block;margin-bottom:4px}
 .example span{color:var(--muted)}
-.tip{
-  display:flex;gap:9px;padding:10px;border-radius:12px;
-  background:#ffffff5b;margin-top:8px;font-size:11px;line-height:1.6;
-}
-.tip b{color:#3386c8}
-.footer{
-  text-align:center;font-size:10px;color:#7093ac;padding:16px;
-}
-::-webkit-scrollbar{width:8px;height:8px}
-::-webkit-scrollbar-thumb{background:#9bd4ef88;border-radius:10px}
-::-webkit-scrollbar-track{background:transparent}
-
-@media(max-width:900px){
-  .main{grid-template-columns:1fr}
-  .right{display:grid;grid-template-columns:1fr 1fr}
-}
-@media(max-width:600px){
-  .app{width:96%;margin:10px auto}
-  .topbar{padding:12px}
-  .brand h1{font-size:16px}
-  .right{grid-template-columns:1fr}
-  .topactions .btn{padding:8px;font-size:10px}
-  .editorwrap{height:380px}
-  .editorpanel{min-height:420px}
-}
+.tip{display:flex;gap:9px;padding:9px;margin-top:8px;border-radius:11px;background:#ffffff55;font-size:11px;line-height:1.6}
+.tip b{color:#3489c8}
+.footer{text-align:center;padding:15px;font-size:10px;color:#7595ad}
+@media(max-width:900px){.main{grid-template-columns:1fr}.right{display:grid;grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.right{grid-template-columns:1fr}.editorwrap{height:55vh;min-height:360px}}
 </style>
 </head>
-<body>
 
-<div class="bubble b1"></div>
-<div class="bubble b2"></div>
-<div class="bubble b3"></div>
+<body>
+<div class="bubble b1"></div><div class="bubble b2"></div><div class="bubble b3"></div>
 
 <div class="app">
-
 <header class="topbar glass">
   <div class="brand">
     <div class="logo">A</div>
-    <div>
-      <h1>Algorizmi Studio</h1>
-      <small>Algorithmic programming environment</small>
-    </div>
+    <div><h1>Algorizmi Studio</h1><small>Algorithmic programming environment</small></div>
   </div>
-  <div class="topactions">
-    <button class="btn arrow" id="copyArrow" title="Copy assignment arrow">←</button>
-    <button class="btn" id="clearBtn">Clear</button>
+  <div class="actions">
+    <button class="btn arrow" id="copyArrow" title="Copy arrow">←</button>
+    <button class="btn" id="clearBtn">Clear editor</button>
     <button class="btn primary" id="runBtn">▶ Run</button>
   </div>
 </header>
@@ -253,98 +148,65 @@ button:active{transform:scale(.96)}
 <div class="main">
 <div class="left">
 
-<section class="panel glass editorpanel">
+<section class="panel glass">
   <div class="panelhead">
-    <span>📝 Editor <small>main.algo</small></span>
+    <span>Editor <small>main.algo</small></span>
     <div class="toolbar">
       <button id="insertArrow">← Arrow</button>
       <button id="insertWrite">Ecrire</button>
       <button id="insertRead">Lire</button>
     </div>
   </div>
-  <div class="editorwrap"><div id="editor"></div></div>
+  <div class="editorwrap"><div id="editor"><textarea id="fallback" spellcheck="false"></textarea></div></div>
   <div class="status">
     <span id="editorStatus">Algorizmi · Ready</span>
     <span id="cursorStatus">Ln 1, Col 1</span>
+    <span id="lineCount">1 lines</span>
   </div>
 </section>
 
 <section class="panel glass consolepanel">
-  <div class="panelhead">
-    <span>◈ Output console</span>
-    <button class="btn" id="consoleClear" style="padding:5px 9px">Clear</button>
-  </div>
+  <div class="panelhead"><span>◈ Output console</span><button class="btn" id="consoleClear">Clear console</button></div>
   <div id="console" class="console"></div>
-  <div class="inputrow" id="inputrow">
-    <input id="consoleInput" autocomplete="off" placeholder="Enter value...">
-    <button id="submitInput">Enter ↵</button>
-  </div>
+  <div class="inputrow" id="inputrow"><input id="consoleInput" placeholder="Enter value..." autocomplete="off"><button id="submitInput">Enter ↵</button></div>
 </section>
 </div>
 
 <div class="right">
 <section class="glass sidecard">
-<h3>✨ Quick start</h3>
-<p>Click an example to load it into the editor.</p>
-
-<div class="example" data-example="hello">
-<strong>01 · Hello world</strong>
-<span>Basic output</span>
-</div>
-
-<div class="example" data-example="variables">
-<strong>02 · Variables</strong>
-<span>Declarations and assignment</span>
-</div>
-
-<div class="example" data-example="input">
-<strong>03 · User input</strong>
-<span>Lire and Ecrire in console</span>
-</div>
-
-<div class="example" data-example="condition">
-<strong>04 · Conditions</strong>
-<span>Si / Sinon</span>
-</div>
-
-<div class="example" data-example="loop">
-<strong>05 · Loop</strong>
-<span>Pour / Pas</span>
-</div>
-
-<div class="example" data-example="while">
-<strong>06 · While</strong>
-<span>Tant que</span>
-</div>
+<h3>Quick start</h3><p>Click an example to load it.</p>
+<div class="example" data-example="hello"><strong>01 · Hello world</strong><span>Basic output</span></div>
+<div class="example" data-example="variables"><strong>02 · Variables</strong><span>Declarations and assignment</span></div>
+<div class="example" data-example="input"><strong>03 · User input</strong><span>Lire and console input</span></div>
+<div class="example" data-example="condition"><strong>04 · Conditions</strong><span>Si / Sinon</span></div>
+<div class="example" data-example="loop"><strong>05 · Loop</strong><span>Pour / Pas</span></div>
+<div class="example" data-example="while"><strong>06 · While</strong><span>TantQue</span></div>
 </section>
 
 <section class="glass sidecard">
-<h3>⌨️ Editor shortcuts</h3>
-<div class="tip"><b>←</b><span>Copy assignment arrow to clipboard</span></div>
-<div class="tip"><b>Tab</b><span>Complete Ecrire, Lire, Si, Pour, Tant que</span></div>
-<div class="tip"><b>Ctrl+Enter</b><span>Run your algorithm</span></div>
-<div class="tip"><b>Enter</b><span>Accept autocomplete suggestions</span></div>
+<h3>Editor shortcuts</h3>
+<div class="tip"><b>←</b><span>Copy assignment arrow</span></div>
+<div class="tip"><b>Tab</b><span>Autocomplete snippets</span></div>
+<div class="tip"><b>Ctrl + Enter</b><span>Run program</span></div>
+<div class="tip"><b>Enter</b><span>Submit console input</span></div>
 </section>
 
 <section class="glass sidecard">
-<h3>🌊 Algorizmi</h3>
-<p>A simple algorithmic environment designed for learning and experimenting with Tunisian-style pseudocode.</p>
+<h3>About</h3><p>Algorizmi is an algorithmic programming environment designed for learning and experimenting with pseudocode.</p>
 </section>
 </div>
 </div>
-
 <div class="footer">Algorizmi Studio · Built for learning</div>
 </div>
 
 <script>
+const $=id=>document.getElementById(id);
 const examples={
 hello:`Algorithme Bonjour
 Début
     Ecrire("Bonjour le monde !")
-Fin
-`,
+Fin`,
 variables:`Algorithme Calcul
-
 Début
     a ← 20
     b ← 5
@@ -353,10 +215,8 @@ Début
 Fin
 
 TDO
-a, b, resultat : réel
-`,
+a, b, resultat : réel`,
 input:`Algorithme InputTest
-
 Début
     Ecrire("Quel est ton nom ? ")
     Lire(nom)
@@ -364,13 +224,10 @@ Début
 Fin
 
 TDO
-nom : chaîne
-`,
+nom : chaîne`,
 condition:`Algorithme Condition
-
 Début
     age ← 16
-
     Si age >= 18 Alors
         Ecrire("Majeur")
     Sinon
@@ -379,10 +236,8 @@ Début
 Fin
 
 TDO
-age : entier
-`,
+age : entier`,
 loop:`Algorithme Boucle
-
 Début
     Pour i de 1 à 5 Faire
         Ecrire(i)
@@ -390,10 +245,8 @@ Début
 Fin
 
 TDO
-i : entier
-`,
+i : entier`,
 while:`Algorithme TantQue
-
 Début
     i ← 1
     TantQue i <= 5 Faire
@@ -403,502 +256,316 @@ Début
 Fin
 
 TDO
-i : entier
-`
+i : entier`
 };
 
-let monacoEditor=null;
-const $=id=>document.getElementById(id);
+let editor=null,running=false,inputResolver=null;
 const consoleBox=$("console");
-let programRunning=false;
-let inputResolver=null;
 
-function log(message,type="info"){
-  const el=document.createElement("div");
-  el.className="log "+type;
-  el.textContent=String(message);
-  consoleBox.appendChild(el);
-  consoleBox.scrollTop=consoleBox.scrollHeight;
+function normalize(s){
+ return String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+}
+function code(){return editor?editor.getValue():$("fallback").value}
+function setCode(s){if(editor)editor.setValue(s);else $("fallback").value=s;status()}
+function status(){
+ const text=code();
+ $("lineCount").textContent=text.split(/\r?\n/).length+" lines";
+ if(editor){
+  const p=editor.getPosition();
+  $("cursorStatus").textContent=`Ln ${p.lineNumber}, Col ${p.column}`;
+ }else{
+  const t=$("fallback"),before=t.value.slice(0,t.selectionStart);
+  const ln=before.split("\n");
+  $("cursorStatus").textContent=`Ln ${ln.length}, Col ${ln.at(-1).length+1}`;
+ }
+}
+function insert(text){
+ if(editor){
+  const p=editor.getPosition();
+  editor.executeEdits("insert",[{range:new monaco.Range(p.lineNumber,p.column,p.lineNumber,p.column),text,forceMoveMarkers:true}]);
+  editor.focus();
+ }else{
+  const t=$("fallback");t.setRangeText(text,t.selectionStart,t.selectionEnd,"end");t.focus();
+ }
+ status();
+}
+function log(s,type="info"){
+  const d=document.createElement("div");d.className="log "+type;d.textContent=String(s);
+  consoleBox.appendChild(d);consoleBox.scrollTop=consoleBox.scrollHeight;
 }
 function clearConsole(){consoleBox.innerHTML=""}
-function normalize(s){
- return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
-}
-function getCode(){
- return monacoEditor?monacoEditor.getValue():$("editor").value;
-}
-function setCode(code){
- if(monacoEditor)monacoEditor.setValue(code);
- else $("editor").value=code;
-}
-function insertText(text){
- if(monacoEditor){
-   const ed=monacoEditor;
-   const sel=ed.getSelection();
-   ed.executeEdits("algorizmi-insert",[{
-     range:sel,
-     text:text,
-     forceMoveMarkers:true
-   }]);
-   ed.focus();
- }else{
-   const el=$("editor");
-   const a=el.selectionStart,b=el.selectionEnd;
-   el.setRangeText(text,a,b,"end");
-   el.focus();
- }
-}
 
 $("copyArrow").onclick=async()=>{
- try{
-  await navigator.clipboard.writeText("←");
-  $("editorStatus").textContent="Assignment arrow copied!";
-  setTimeout(()=>$("editorStatus").textContent="Algorizmi · Ready",1500);
- }catch(e){
-  insertText("←");
-  log("Arrow inserted into editor instead (clipboard permission unavailable).");
- }
+ try{await navigator.clipboard.writeText("←");$("editorStatus").textContent="← copied";
+ setTimeout(()=>$("editorStatus").textContent="Algorizmi · Ready",1400)}
+ catch{insert("←")}
 };
-$("insertArrow").onclick=()=>insertText("←");
-$("insertWrite").onclick=()=>insertText('Ecrire("")');
-$("insertRead").onclick=()=>insertText('Lire()');
+$("insertArrow").onclick=()=>insert("←");
+$("insertWrite").onclick=()=>insert('Ecrire("")');
+$("insertRead").onclick=()=>insert("Lire()");
 $("clearBtn").onclick=()=>setCode("");
 $("consoleClear").onclick=clearConsole;
-$("runBtn").onclick=runProgram;
-document.addEventListener("keydown",e=>{
- if(e.ctrlKey&&e.key==="Enter"){
-   e.preventDefault();
-   runProgram();
- }
-});
+$("runBtn").onclick=run;
+$("fallback").addEventListener("input",status);
+document.addEventListener("keydown",e=>{if(e.ctrlKey&&e.key==="Enter"){e.preventDefault();run()}});
 
-document.querySelectorAll(".example").forEach(el=>{
- el.onclick=()=>{
-  setCode(examples[el.dataset.example]);
-  clearConsole();
-  log("Example loaded. Press Run.","success");
- };
+document.querySelectorAll(".example").forEach(x=>x.onclick=()=>{
+ setCode(examples[x.dataset.example]);clearConsole();log("Example loaded.","success");
 });
 
 // Monaco
-(function loadMonaco(){
+(function(){
  const script=document.createElement("script");
  script.src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js";
  script.onload=()=>{
   require.config({paths:{vs:"https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs"}});
   require(["vs/editor/editor.main"],()=>{
-   const fallback=$("editor");
-   const initial=examples.hello;
-   monacoEditor=monaco.editor.create($("editor"),{
-     value:initial,
-     language:"plaintext",
-     theme:"algorizmiGlass",
-     automaticLayout:true,
-     fontFamily:"JetBrains Mono, monospace",
-     fontSize:13,
-     lineHeight:23,
-     minimap:{enabled:false},
-     roundedSelection:true,
-     scrollBeyondLastLine:false,
-     padding:{top:16,bottom:16},
-     wordWrap:"on",
-     suggestOnTriggerCharacters:true,
-     quickSuggestions:true,
-     tabSize:4,
-     insertSpaces:true
-   });
-   fallback.remove();
-
-   monaco.editor.defineTheme("algorizmiGlass",{
-    base:"vs",
-    inherit:true,
-    rules:[
-      {token:"keyword",foreground:"3186D8",fontStyle:"bold"},
-      {token:"string",foreground:"199E79"},
-      {token:"number",foreground:"D58A38"},
-      {token:"comment",foreground:"91A9BB",fontStyle:"italic"}
-    ],
-    colors:{
-     "editor.background":"#FFFFFF00",
-     "editor.foreground":"254C6C",
-     "editorLineNumber.foreground":"9AB8CE",
-     "editorLineNumber.activeForeground":"3C91CF",
-     "editorCursor.foreground":"3799ED",
-     "editor.selectionBackground":"9EDCFF77",
-     "editor.lineHighlightBackground":"FFFFFF30",
-     "editorWidget.background":"E8F7FF",
-     "editorWidget.border":"FFFFFF"
-    }
-   });
-   monacoEditor.setTheme("algorizmiGlass");
-
    monaco.languages.register({id:"algorizmi"});
-   monaco.languages.setMonarchTokensProvider("algorizmi",{
-    tokenizer:{
-     root:[
-      [/\b(Algorithme|Début|Fin|TDO|Variables|Ecrire|Ecrire_nl|Lire|Si|Alors|Sinon|FinSi|Pour|de|à|Faire|FinPour|TantQue|FinTantQue|Répéter|Jusqu'à|Selon|Cas|FinSelon|Vrai|Faux)\b/i,"keyword"],
-      [/\b(entier|réel|reel|chaine|chaîne|booléen|booleen|caractère)\b/i,"type"],
-      [/"([^"\\]|\\.)*"/,"string"],
-      [/'([^'\\]|\\.)*'/,"string"],
-      [/\b\d+(\.\d+)?\b/,"number"],
-      [/\/\/.*$/,"comment"]
-     ]
-    }
+   monaco.languages.setMonarchTokensProvider("algorizmi",{tokenizer:{root:[
+    [/\b(Algorithme|Début|Fin|TDO|Variables|Ecrire|Ecrire_nl|Lire|Si|Alors|Sinon|FinSi|Pour|de|à|Faire|FinPour|TantQue|FinTantQue|Répéter|Jusqu'à)\b/i,"keyword"],
+    [/\b(entier|réel|reel|chaine|chaîne|booléen|booleen)\b/i,"type"],
+    [/"([^"\\]|\\.)*"/,"string"],
+    [/'([^'\\]|\\.)*'/,"string"],
+    [/\b\d+(\.\d+)?\b/,"number"],
+    [/\/\/.*$/,"comment"]
+   ]}});
+   monaco.editor.defineTheme("glass",{base:"vs",inherit:true,rules:[
+    {token:"keyword",foreground:"3186D8",fontStyle:"bold"},
+    {token:"string",foreground:"199E79"},
+    {token:"number",foreground:"D58A38"},
+    {token:"type",foreground:"8958BD"},
+    {token:"comment",foreground:"91A9BB",fontStyle:"italic"}
+   ],colors:{
+    "editor.background":"FFFFFF00","editor.foreground":"254C6C",
+    "editorLineNumber.foreground":"9AB8CE","editorLineNumber.activeForeground":"3C91CF",
+    "editorCursor.foreground":"3799ED","editor.selectionBackground":"9EDCFF77",
+    "editor.lineHighlightBackground":"FFFFFF30"
+   }});
+
+   const host=$("editor");
+   editor=monaco.editor.create(host,{value:$("fallback").value||examples.hello,
+    language:"algorizmi",theme:"glass",automaticLayout:true,fontFamily:"JetBrains Mono,monospace",
+    fontSize:13,lineHeight:23,minimap:{enabled:false},scrollBeyondLastLine:false,
+    padding:{top:16,bottom:16},wordWrap:"on",quickSuggestions:true,
+    tabSize:4,insertSpaces:true});
+   $("fallback").style.display="none";
+   editor.onDidChangeCursorPosition(status);
+   editor.onDidChangeModelContent(status);
+
+   const snippets=[
+    ["Ecrire",'Ecrire("${1}")'],
+    ["Lire",'Lire(${1})'],
+    ["Si",'Si ${1:condition} Alors\n    ${2}\nFinSi'],
+    ["Si / Sinon",'Si ${1:condition} Alors\n    ${2}\nSinon\n    ${3}\nFinSi'],
+    ["Pour",'Pour ${1:i} de ${2:1} à ${3:10} Faire\n    ${4}\nFinPour'],
+    ["TantQue",'TantQue ${1:condition} Faire\n    ${2}\nFinTantQue'],
+    ["Répéter",'Répéter\n    ${1}\nJusqu’à ${2:condition}'],
+    ["Algorithme",'Algorithme ${1:Nom}\nDébut\n    ${2}\nFin'],
+    ["TDO",'TDO\n${1:variable} : ${2:entier}']
+   ];
+   monaco.languages.registerCompletionItemProvider("algorizmi",{provideCompletionItems(model,pos){
+    const word=model.getWordUntilPosition(pos);
+    const range={startLineNumber:pos.lineNumber,endLineNumber:pos.lineNumber,startColumn:word.startColumn,endColumn:word.endColumn};
+    return{suggestions:snippets.map(([label,text])=>({label,insertText:text,insertTextRules:monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,kind:monaco.languages.CompletionItemKind.Snippet,range}))};
+   }});
+   editor.onKeyDown(e=>{
+    if(e.keyCode!==monaco.KeyCode.Tab)return;
+    const p=editor.getPosition(),w=editor.getModel().getWordUntilPosition(p),k=normalize(w.word);
+    const map={ecrire:'Ecrire("${1}")',lire:'Lire(${1})',si:'Si ${1:condition} Alors\n    ${2}\nFinSi',pour:'Pour ${1:i} de ${2:1} à ${3:10} Faire\n    ${4}\nFinPour',tantque:'TantQue ${1:condition} Faire\n    ${2}\nFinTantQue',repeter:'Répéter\n    ${1}\nJusqu’à ${2:condition}'};
+    if(!map[k])return;
+    e.preventDefault();
+    editor.executeEdits("snippet",[{range:new monaco.Range(p.lineNumber,w.startColumn,p.lineNumber,p.column),text:map[k]}]);
    });
-   monacoEditor.updateOptions({language:"algorizmi"});
-   monacoEditor.onDidChangeCursorPosition(e=>{
-    $("cursorStatus").textContent=`Ln ${e.position.lineNumber}, Col ${e.position.column}`;
-   });
-   monaco.languages.registerCompletionItemProvider("algorizmi",{
-    provideCompletionItems(model,pos){
-     const word=model.getWordUntilPosition(pos);
-     const range={
-      startLineNumber:pos.lineNumber,
-      endLineNumber:pos.lineNumber,
-      startColumn:word.startColumn,
-      endColumn:word.endColumn
-     };
-     const snippets=[
-      ["Ecrire","Ecrire","Ecrire(\"${1}\")"],
-      ["Ecrire_nl","Ecrire_nl","Ecrire_nl(\"${1}\")"],
-      ["Lire","Lire","Lire(${1})"],
-      ["Si","Si","Si ${1:condition} Alors\n    ${2}\nSinon\n    ${3}\nFinSi"],
-      ["Pour","Pour","Pour ${1:i} de ${2:1} à ${3:10} Faire\n    ${4}\nFinPour"],
-      ["TantQue","TantQue","TantQue ${1:condition} Faire\n    ${2}\nFinTantQue"],
-      ["Répéter","Répéter","Répéter\n    ${1}\nJusqu'à ${2:condition}"],
-      ["Algorithme","Algorithme","Algorithme ${1:Nom}\nDébut\n    ${2}\nFin"],
-      ["TDO","TDO","TDO\n${1:variable} : ${2:entier}"]
-     ];
-     return {suggestions:snippets.map(s=>({
-      label:s[0],insertText:s[2],insertTextRules:monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      kind:monaco.languages.CompletionItemKind.Snippet,range
-     }))};
-    }
-   });
-   monacoEditor.onKeyDown(e=>{
-    if(e.keyCode===monaco.KeyCode.Tab){
-     const pos=monacoEditor.getPosition();
-     const word=monacoEditor.getModel().getWordUntilPosition(pos);
-     const w=word.word.toLowerCase();
-     const map={
-      "ecrire":'Ecrire("${1}")',
-      "écrire":'Ecrire("${1}")',
-      "lire":'Lire(${1})',
-      "si":'Si ${1:condition} Alors\n    ${2}\nFinSi',
-      "pour":'Pour ${1:i} de ${2:1} à ${3:10} Faire\n    ${4}\nFinPour',
-      "tantque":'TantQue ${1:condition} Faire\n    ${2}\nFinTantQue'
-     };
-     if(map[w]){
-      e.preventDefault();
-      const range=new monaco.Range(pos.lineNumber,word.startColumn,pos.lineNumber,pos.column);
-      monacoEditor.executeEdits("snippet",[{
-       range,text:map[w],forceMoveMarkers:true
-      }]);
-      monacoEditor.focus();
-     }
-    }
-   });
-   setCode(initial);
+   status();
   });
  };
- script.onerror=()=>{
-  log("Monaco couldn't load. Editor fallback is available if initialized.","error");
- };
+ script.onerror=()=>log("Monaco failed to load. Internet connection required.","error");
  document.head.appendChild(script);
 })();
 
-// ---------- ALGORIZMI INTERPRETER ----------
-
-function tokenizeExpr(text){
- const tokens=[];
- const re=/\s+|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\d+(?:\.\d+)?|<=|>=|<>|!=|==|[()+\-*/%<>=]|[A-Za-zÀ-ÿ_][A-Za-zÀ-ÿ_\d]*/gy;
- let i=0;
- while(i<text.length){
-  re.lastIndex=i;
-  const m=re.exec(text);
-  if(!m)throw Error("Expression invalide près de : "+text.slice(i);
-  if(!m[0].trim()) {i=re.lastIndex;continue}
-  tokens.push(m[0]);
-  i=re.lastIndex;
+// Expression parser
+function tokens(src){
+ const re=/\s+|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\d+(?:\.\d+)?|<=|>=|<>|!=|==|[()+\-*/%,<>=]|[A-Za-zÀ-ÿ_][A-Za-zÀ-ÿ_\d]*/gy;
+ let a=[],i=0;
+ while(i<src.length){
+  re.lastIndex=i;const m=re.exec(src);
+  if(!m)throw Error("Expression invalide près de : "+src.slice(i));
+  i=re.lastIndex;if(!m[0].trim())continue;a.push(m[0]);
  }
- return tokens;
+ return a;
 }
-function evalExpr(expression,env){
- const t=tokenizeExpr(expression);
- let p=0;
- const peek=()=>t[p];
- const take=()=>t[p++];
- const match=s=>normalize(peek()||"")===normalize(s);
- const expect=s=>{
-  if(!match(s))throw Error("Expected "+s);
-  take();
- };
+function evaluate(src,env){
+ const a=tokens(src);let i=0;
+ const peek=()=>a[i],take=()=>a[i++],is=x=>normalize(peek()||"")===normalize(x);
+ function need(x){if(!is(x))throw Error("Expected "+x);take()}
  function primary(){
-  let x=peek();
-  if(x===undefined)throw Error("Expression incomplete");
-  if(x==="("){take();let v=or();expect(")");return v}
-  if(/^".*"$|^'.*'$/.test(x)){
-   take();return x.slice(1,-1).replace(/\\n/g,"\n").replace(/\\t/g,"\t").replace(/\\"/g,'"');
-  }
-  if(/^\d+(\.\d+)?$/.test(x)){take();return Number(x)}
-  if(normalize(x)==="vrai"){take();return true}
-  if(normalize(x)==="faux"){take();return false}
-  if(normalize(x)==="non"){take();return !primary()}
+  let x=peek();if(x===undefined)throw Error("Expression incomplète");
+  if(x==="("){take();let v=or();need(")");return v}
+  if(/^".*"$|^'.*'$/.test(x)){take();return x.slice(1,-1)}
+  if(/^\d/.test(x)){take();return Number(x)}
+  if(is("vrai")){take();return true}
+  if(is("faux")){take();return false}
+  if(is("non")){take();return !primary()}
   if(/^[A-Za-zÀ-ÿ_]\w*$/.test(x)){
    take();
-   if(peek()==="("){
-    take();
-    const args=[];
-    if(peek()!==")"){
-     args.push(or());
-     while(peek()===","){take();args.push(or())}
-    }
-    expect(")");
-    return callFunction(x,args);
-   }
-   if(env.has(x.toLowerCase()))return env.get(x.toLowerCase());
-   throw Error("Variable non déclarée: "+x);
+   if(peek()==="("){take();let args=[];if(peek()!==")"){args.push(or());while(peek()===","){take();args.push(or())}}need(")");return fn(x,args)}
+   if(env.has(normalize(x)))return env.get(normalize(x));
+   throw Error("Variable non déclarée : "+x);
   }
-  throw Error("Expression invalide: "+x);
+  throw Error("Expression invalide : "+x);
  }
- function unary(){if(match("-")){take();return -unary()}if(match("+")){take();return unary()}return primary()}
- function mul(){let a=unary();while(match("*")||match("/")||match("mod")||match("%")||match("div")){let op=normalize(take());let b=unary();if(op==="*")a*=b;else if(op==="/"){if(b===0)throw Error("Division par zéro");a/=b}else if(op==="mod"||op==="%")a%=b;else a=Math.trunc(a/b)}return a}
- function add(){let a=mul();while(match("+")||match("-")){let op=take(),b=mul();a=op==="+"?((typeof a==="string"||typeof b==="string")?String(a)+String(b):a+b):a-b}return a}
- function compare(){let a=add();while(["=","==","<>","!=","<",">","<=",">="].some(match)){let op=take(),b=add();switch(op){case "=":case "==":a=a==b;break;case "<>":case "!=":a=a!=b;break;case "<":a=a<b;break;case ">":a=a>b;break;case "<=":a=a<=b;break;case ">=":a=a>=b;break}}return a}
- function and(){let a=compare();while(match("et")){take();let b=compare();a=Boolean(a&&b)}return a}
- function or(){let a=and();while(match("ou")){take();let b=and();a=Boolean(a||b)}return a}
- const value=or();
- if(p<t.length)throw Error("Expression invalide près de "+t[p]);
- return value;
+ function unary(){if(is("-")){take();return -unary()}if(is("+")){take();return unary()}return primary()}
+ function mul(){let v=unary();while(is("*")||is("/")||is("div")||is("mod")||is("%")){let op=normalize(take()),b=unary();if(op==="*")v*=b;else if(op==="/"){if(!b)throw Error("Division par zéro");v/=b}else if(op==="div"){if(!b)throw Error("Division par zéro");v=Math.trunc(v/b)}else v%=b}return v}
+ function add(){let v=mul();while(is("+")||is("-")){let op=take(),b=mul();v=op==="+"?(typeof v==="string"||typeof b==="string"?String(v)+String(b):v+b):v-b}return v}
+ function cmp(){let v=add();while(["=","==","<>","!=","<",">","<=",">="].some(is)){let op=take(),b=add();if(op==="="||op==="==")v=v==b;else if(op==="!="||op==="<>")v=v!=b;else if(op==="<")v=v<b;else if(op===">")v=v>b;else if(op==="<=")v=v<=b;else v=v>=b}return v}
+ function and(){let v=cmp();while(is("et")){take();let b=cmp();v=Boolean(v&&b)}return v}
+ function or(){let v=and();while(is("ou")){take();let b=and();v=Boolean(v||b)}return v}
+ let result=or();if(i<a.length)throw Error("Expression invalide près de "+a[i]);return result;
 }
-function callFunction(name,args){
- const n=normalize(name);
- const x=args[0];
+function fn(name,args){
+ const x=args[0],n=normalize(name);
  switch(n){
- case "long":return String(x??"").length;
- case "ent":return Math.trunc(Number(x));
- case "abs":return Math.abs(Number(x));
- case "racine":case "sqrt":return Math.sqrt(Number(x));
- case "convch":return String(x);
- case "valeur":return Number(x);
- case "majusc":case "majus":return String(x).toUpperCase();
- case "minusc":return String(x).toLowerCase();
- case "arrondi":return Math.round(Number(x));
- case "alea":return Math.random();
- default:throw Error("Fonction inconnue: "+name);
+  case"long":return String(x??"").length;
+  case"ent":return Math.trunc(Number(x));
+  case"abs":return Math.abs(Number(x));
+  case"racine":case"sqrt":return Math.sqrt(Number(x));
+  case"convch":return String(x);
+  case"valeur":return Number(x);
+  case"majus":return String(x).toUpperCase();
+  case"minusc":return String(x).toLowerCase();
+  case"arrondi":return Math.round(Number(x));
+  case"alea":return Math.random();
+  default:throw Error("Fonction inconnue : "+name);
  }
 }
-
 function splitArgs(s){
- const arr=[];let start=0,depth=0,quote=null;
- for(let i=0;i<s.length;i++){
-  const c=s[i];
-  if(quote){
-   if(c==="\\")i++;
-   else if(c===quote)quote=null;
-  }else if(c==='"'||c==="'")quote=c;
-  else if(c==="(")depth++;
-  else if(c===")")depth--;
-  else if(c===","&&depth===0){arr.push(s.slice(start,i).trim());start=i+1}
+ let out=[],start=0,d=0,q=null;
+ for(let i=0;i<s.length;i++){let c=s[i];
+  if(q){if(c==="\\")i++;else if(c===q)q=null}
+  else if(c==='""'||c==="'" )q=c;
+  else if(c==="(")d++;
+  else if(c===")")d--;
+  else if(c===","&&d===0){out.push(s.slice(start,i).trim());start=i+1}
  }
- if(s.trim())arr.push(s.slice(start).trim());
- return arr;
+ if(s.trim())out.push(s.slice(start).trim());return out;
 }
-function parseWriteArgs(text,env){
- return splitArgs(text).map(x=>evalExpr(x,env));
-}
-function parseDeclarations(lines){
- const types=new Map();
- let inTDO=false,inVars=false;
+function getTypes(lines){
+ let map=new Map(),active=false;
  for(const line of lines){
-  const n=normalize(line.trim());
-  if(n==="tdo"){inTDO=true;inVars=false;continue}
-  if(n==="variables"){inVars=true;inTDO=false;continue}
-  if(n==="debut"||n==="fin"){inTDO=false;inVars=false;continue}
-  if(!inTDO&&!inVars)continue;
-  const m=line.match(/^(.+?)\s*:\s*(.+)$/);
-  if(!m)continue;
-  const type=normalize(m[2].trim());
-  m[1].split(",").forEach(v=>types.set(normalize(v.trim()),type));
+  const n=normalize(line);
+  if(n==="tdo"||n==="variables"){active=true;continue}
+  if(n==="debut"){active=false;continue}
+  if(!active)continue;
+  const m=line.match(/^(.+?)\s*:\s*(.+)$/);if(!m)continue;
+  const type=normalize(m[2]);
+  m[1].split(",").forEach(name=>map.set(normalize(name),type));
  }
- return types;
+ return map;
 }
-function parseProgram(code){
- const lines=code.split(/\r?\n/);
- const types=parseDeclarations(lines);
- return {lines,types};
-}
-function cleanLine(line){
- return line.trim().replace(/\s+/g," ");
-}
-function extractParentheses(s){
- const i=s.indexOf("("),j=s.lastIndexOf(")");
- if(i<0||j<i)throw Error("Parenthèses manquantes");
- return s.slice(i+1,j);
-}
-function findBlockEnd(lines,start,ends){
+function findEnd(lines,start,end,open,close){
  let depth=0;
- for(let i=start;i<lines.length;i++){
-  const n=normalize(cleanLine(lines[i]));
-  if(/^(si|tant que|pour|repeter)\b/.test(n))depth++;
-  if(["finsi","fintantque","finpour","jusqu'a"].some(e=>n.startsWith(e))){
-   if(depth===0)return i;
-   depth--;
-  }
+ for(let i=start;i<end;i++){
+  let n=normalize(lines[i]);
+  if(n.startsWith(open))depth++;
+  if(n===close){if(depth===0)return i;depth--}
  }
- return lines.length;
+ return -1;
 }
-async function waitInput(promptText){
- $("inputrow").classList.add("active");
- $("consoleInput").placeholder=promptText||"Enter value...";
- $("consoleInput").value="";
- $("consoleInput").focus();
- return new Promise(resolve=>{inputResolver=resolve});
+function findIf(lines,start,end){
+ let depth=0,elseAt=-1;
+ for(let i=start;i<end;i++){
+  let n=normalize(lines[i]);
+  if(/^si\b/.test(n))depth++;
+  if(n==="sinon"&&depth===0)elseAt=i;
+  if(n==="finsi"){if(depth===0)return{i,end:i,elseAt};depth--}
+ }
+ return null;
+}
+function getInput(variable){
+ $("inputrow").classList.add("active");$("consoleInput").value="";
+ $("consoleInput").placeholder="Value for "+variable;$("consoleInput").focus();
+ return new Promise(resolve=>inputResolver=resolve);
 }
 function submitInput(){
  if(!inputResolver)return;
- const value=$("consoleInput").value;
- log("> "+value,"input");
+ const val=$("consoleInput").value;log("> "+val,"input");
  $("inputrow").classList.remove("active");
- const r=inputResolver;inputResolver=null;r(value);
+ let r=inputResolver;inputResolver=null;r(val);
 }
 $("submitInput").onclick=submitInput;
-$("consoleInput").addEventListener("keydown",e=>{
- if(e.key==="Enter")submitInput();
-});
+$("consoleInput").onkeydown=e=>{if(e.key==="Enter")submitInput()};
 
-async function runProgram(){
- if(programRunning)return;
- programRunning=true;
- $("runBtn").textContent="⏳ Running";
- $("editorStatus").textContent="Running...";
- clearConsole();
- const code=getCode();
- const parsed=parseProgram(code);
- const env=new Map();
- const types=parsed.types;
- const lines=parsed.lines;
- let steps=0;
- const maxSteps=100000;
- const declared=new Set(types.keys());
-
- function setVar(name,val){
-  const n=normalize(name);
-  if(!declared.has(n))throw Error("Variable non déclarée: "+name);
-  env.set(n,val);
+async function run(){
+ if(running)return;running=true;$("runBtn").textContent="⏳ Running";
+ $("editorStatus").textContent="Executing...";clearConsole();
+ const src=code(),lines=src.split(/\r?\n/),types=getTypes(lines),declared=new Set(types.keys()),env=new Map();
+ let steps=0;const LIMIT=100000;
+ function assign(name,value){
+  const n=normalize(name);if(!declared.has(n))throw Error("Variable non déclarée : "+name);
+  env.set(n,value);
  }
- function getVar(name){
-  const n=normalize(name);
-  if(!env.has(n))throw Error("Variable non déclarée: "+name);
-  return env.get(n);
- }
- function statement(line){
-  line=cleanLine(line);
-  if(!line||line.startsWith("//"))return;
-  let m;
-  if((m=line.match(/^Ecrire(?:_nl)?\s*\((.*)\)$/i))){
-   const vals=parseWriteArgs(m[1],env);
-   log(vals.map(v=>v===null?"":v).join(" "),"info");
-   return;
-  }
-  if((m=line.match(/^Lire\s*\((.+)\)$/i))){
-   const names=splitArgs(m[1]);
-   for(const name of names){
-    if(!declared.has(normalize(name)))throw Error("Variable non déclarée: "+name);
-    const input=await waitInput("Valeur pour "+name);
-    const typ=types.get(normalize(name));
-    let val=input;
-    if(["entier","int"].includes(typ))val=parseInt(input,10);
-    else if(["reel","real"].includes(typ))val=parseFloat(input);
-    else if(["booleen","bool"].includes(typ))val=normalize(input)==="vrai"||input==="1";
-    if((typ==="entier"||typ==="int")&&!Number.isFinite(val))throw Error("Entier invalide");
-    if((typ==="reel"||typ==="real")&&!Number.isFinite(val))throw Error("Réel invalide");
-    env.set(normalize(name),val);
-   }
-   return;
-  }
-  if((m=line.match(/^(.+?)\s*(←|<-|:=|=)\s*(.+)$/))){
-   setVar(m[1].trim(),evalExpr(m[3],env));return;
-  }
-  throw Error("Instruction inconnue: "+line);
- }
-
- async function execRange(start,end){
+ async function execute(start,end){
   for(let i=start;i<end;i++){
-   if(++steps>maxSteps)throw Error("Limite d'exécution atteinte");
-   const line=cleanLine(lines[i]);
-   if(!line||/^(algorithme|debut|fin|tdo|variables)$/i.test(normalize(line)))continue;
-   let m;
+   if(++steps>LIMIT)throw Error("Limite d'exécution atteinte");
+   let line=lines[i].trim(),m;
+   if(!line||line.startsWith("//"))continue;
+   if(/^(algorithme|debut|fin|tdo|variables)$/i.test(normalize(line)))continue;
+   if((m=line.match(/^Ecrire(?:_nl)?\s*\((.*)\)$/i))){
+    log(splitArgs(m[1]).map(x=>String(evaluate(x,env))).join(" "));continue;
+   }
+   if((m=line.match(/^Lire\s*\((.+)\)$/i))){
+    for(const name of splitArgs(m[1])){
+     const n=normalize(name);if(!declared.has(n))throw Error("Variable non déclarée : "+name);
+     const raw=await getInput(name),type=types.get(n);let v=raw;
+     if(type.includes("entier"))v=parseInt(raw,10);
+     else if(type.includes("reel"))v=parseFloat(raw);
+     else if(type.includes("booleen"))v=normalize(raw)==="vrai";
+     if((type.includes("entier")||type.includes("reel"))&&!Number.isFinite(v))throw Error("Valeur invalide : "+name);
+     env.set(n,v);
+    }continue;
+   }
+   if((m=line.match(/^(.+?)\s*(←|<-|:=|=)\s*(.+)$/))){
+    assign(m[1].trim(),evaluate(m[3],env));continue;
+   }
    if((m=line.match(/^Si\s+(.+?)\s+Alors$/i))){
-    let j=i+1,depth=0,elseAt=-1,endAt=-1;
-    for(;j<end;j++){
-     const n=normalize(cleanLine(lines[j]));
-     if(/^si\b/.test(n))depth++;
-     if(n==="finsi"){if(depth===0){endAt=j;break}depth--}
-     if(n==="sinon"&&depth===0)elseAt=j;
-    }
-    if(endAt<0)throw Error("FinSi manquant");
-    if(await evalExpr(m[1],env)){
-     await execRange(i+1,elseAt<0?endAt:elseAt);
-    }else if(elseAt>=0)await execRange(elseAt+1,endAt);
-    i=endAt;continue;
+    const b=findIf(lines,i+1,end);if(!b)throw Error("FinSi manquant");
+    if(evaluate(m[1],env))await execute(i+1,b.elseAt<0?b.end:b.elseAt);
+    else if(b.elseAt>=0)await execute(b.elseAt+1,b.end);
+    i=b.end;continue;
    }
    if((m=line.match(/^Pour\s+(\w+)\s+de\s+(.+?)\s+à\s+(.+?)(?:\s+Pas\s+(.+?))?\s+Faire$/i))){
-    const variable=m[1],from=Number(evalExpr(m[2],env)),to=Number(evalExpr(m[3],env)),step=m[4]?Number(evalExpr(m[4],env)):1;
-    if(!step)throw Error("Pas ne peut pas être 0");
-    let j=i+1,depth=0;
-    for(;j<end;j++){const n=normalize(cleanLine(lines[j]));if(/^pour\b/.test(n))depth++;if(n==="finpour"){if(depth===0)break;depth--}}
-    if(j>=end)throw Error("FinPour manquant");
+    const variable=m[1],from=Number(evaluate(m[2],env)),to=Number(evaluate(m[3],env)),step=m[4]?Number(evaluate(m[4],env)):1;
+    if(!step)throw Error("Pas ne peut pas être zéro");
+    const j=findEnd(lines,i+1,end,"pour","finpour");if(j<0)throw Error("FinPour manquant");
     for(let v=from;step>0?v<=to:v>=to;v+=step){
-     env.set(normalize(variable),v);
-     await execRange(i+1,j);
-    }
-    i=j;continue;
+     if(++steps>LIMIT)throw Error("Limite d'exécution atteinte");
+     env.set(normalize(variable),v);await execute(i+1,j);
+    }i=j;continue;
    }
    if((m=line.match(/^TantQue\s+(.+?)\s+Faire$/i))){
-    let j=i+1,depth=0;
-    for(;j<end;j++){const n=normalize(cleanLine(lines[j]));if(/^tant que\b/.test(n))depth++;if(n==="fintantque"){if(depth===0)break;depth--}}
-    if(j>=end)throw Error("FinTantQue manquant");
-    while(await evalExpr(m[1],env)){
-     if(++steps>maxSteps)throw Error("Boucle infinie?");
-     await execRange(i+1,j);
-    }
+    const j=findEnd(lines,i+1,end,"tantque","fintantque");if(j<0)throw Error("FinTantQue manquant");
+    while(evaluate(m[1],env)){if(++steps>LIMIT)throw Error("Boucle infinie ?");await execute(i+1,j)}
     i=j;continue;
    }
    if(normalize(line)==="repeter"){
-    let j=i+1;
-    while(j<end&&!normalize(cleanLine(lines[j])).startsWith("jusqu"))j++;
+    let j=i+1;while(j<end&&!normalize(lines[j]).startsWith("jusqu"))j++;
     if(j>=end)throw Error("Jusqu'à manquant");
-    const cond=cleanLine(lines[j]).replace(/^jusqu['’àa\s]*/i,"");
-    do{
-     if(++steps>maxSteps)throw Error("Boucle infinie?");
-     await execRange(i+1,j);
-    }while(!await evalExpr(cond,env));
+    const condition=lines[j].trim().replace(/^jusqu['’àa\s]*/i,"");
+    do{if(++steps>LIMIT)throw Error("Limite atteinte");await execute(i+1,j)}while(!evaluate(condition,env));
     i=j;continue;
    }
-   await statement(line);
+   throw Error("Instruction inconnue : "+line);
   }
  }
  try{
-  if(!/^\s*Algorithme\b/i.test(code))throw Error("Algorithme manquant");
-  if(!/\bDébut\b/i.test(code))throw Error("Début manquant");
-  if(!/\bFin\b/i.test(code))throw Error("Fin manquant");
-  if(types.size===0)throw Error("TDO manquant ou aucune variable déclarée");
-  log("Program started","success");
-  const start=lines.findIndex(l=>normalize(cleanLine(l))==="debut")+1;
-  const end=lines.findIndex((l,i)=>i>=start&&normalize(cleanLine(l))==="fin");
-  if(end<0)throw Error("Fin manquant");
-  await execRange(start,end);
-  log("Program finished successfully.","success");
- }catch(e){
-  log("ERROR: "+e.message,"error");
- }finally{
-  programRunning=false;
-  $("runBtn").textContent="▶ Run";
-  $("editorStatus").textContent="Algorizmi · Ready";
-  $("inputrow").classList.remove("active");
- }
+  if(!/^\s*Algorithme\b/i.test(src))throw Error("Algorithme manquant");
+  const start=lines.findIndex(x=>normalize(x)==="debut"),end=lines.findIndex((x,i)=>i>start&&normalize(x)==="fin");
+  if(start<0)throw Error("Début manquant");if(end<0)throw Error("Fin manquant");
+  log("Program started","success");await execute(start+1,end);log("Program finished successfully.","success");
+ }catch(e){log("ERROR: "+e.message,"error")}
+ finally{running=false;$("runBtn").textContent="▶ Run";$("editorStatus").textContent="Algorizmi · Ready";$("inputrow").classList.remove("active")}
 }
 </script>
 </body>
 </html>
+
